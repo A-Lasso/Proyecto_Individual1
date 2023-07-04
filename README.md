@@ -11,10 +11,22 @@ Empece por hacer las transformaciones pedidas y necesarias, comenzando con las m
     * Solo por observación use el código "data.isna().sum()", asi veía los vacios que quedan y en qué columnas.
     * Ahora sí, cree la columna return, primero verificando el tipo de valores de cada columna, y luego asegurandome de pasar los valores de la columna budget de string a float. La columna return la cree realizando un ciclo (en el cual tuve que hacer zip para poder renombrar a los valores de cada columna como i y j) en el que si budget es distinto de cero se hace la división y se agrega el valor a la lista que en principio está vacía, y si budget es cero el valor que se agrega es cero a la lista. Luego esta lista es la contenedora de los valores de return y lo último por hacer es crear la nueva columna con estos valores.
     * Ahora paso a crear la siguiente columna pedida "release_year", para esto primero tuve que transformar la columna "release_date" a datetime y que en caso de que tire error (no es una fecha como tal o no esta en el formato correcto) me va a llenar con vacio. Luego cree la nueva columna de los años con `"data["release_year"]=data["release_date"].dt.year"` 
-    * Decidi eliminar tres filas que eran completamente inusables, no solamente están llenas de vacios, sino que los pocos valores que tienen parecen estar intercambiados, y no sabría cómo sería el reordenamiento correcto. Justamente este desorden trajo mayores vacios, las fechas fueron imposibles de calcular. `data.drop(labels=[19730,29503,35587],axis=0,inplace=True)`
+    * Eliminé tres filas que eran completamente inusables, no solamente están llenas de vacios, sino que los pocos valores que tienen parecen estar intercambiados, y no sabría cómo sería el reordenamiento correcto. Justamente este desorden trajo mayores vacios, las fechas fueron imposibles de calcular. `data.drop(labels=[19730,29503,35587],axis=0,inplace=True)`.<br>
 **Termine re acomodando las columnas del dataframe por simple gusto, el orden es a ojo y no cambia los valores ni los futuros resultados.**
 
 #### Desanidado
 *Decidi un apartado para esto dentro de ETL ya que requiere mayor desarrollo que simplemente hacer una columna*<br>
-
-La función desanidar_cast se aplica a cada fila del DataFrame original utilizando df.apply(desanidar_cast, axis=1). Esto significa que la función se ejecuta una vez por cada fila y devuelve un DataFrame desanidado para esa fila específica
+**Empecé con el segundo csv provisto** de donde sacamos cast y crew(columna donde se encuentran los directores), como pueden apreciar también desanide una columna innecesariamente porque en el momento no me dí cuenta, pero tampoco quise eliminar ese proceso, fue la primer columna que desanide y de ella me base para el resto.<br>
+Para desanidar utilicé la función:<br>
+```python
+def desanidar_cast(row):
+    cast_data = ast.literal_eval(row['cast'])
+    desanidado = pd.json_normalize(cast_data)
+    desanidado['id'] = row['id']
+    return desanidado
+```
+Para esta función obtuve ayuda principal de chatgpt y luego para entenderla bien pedí que me expliqué cada parte. La función se aplica a cada fila del DataFrame original utilizando df.apply(desanidar_cast, axis=1). Se utiliza `ast.literal_eval(row["cast"])` para evaluar de forma segura la expresión literal de la columna "cast" y convertirla en una estructura de datos legible por Python, esto *permite tratar el contenido de la columna como una lista de diccionarios*. Luego, se utiliza `pd.json_normalize` para desanidar los datos y convertirlos en un DataFrame, esto *crea nuevas columnas para cada clave en los diccionarios de la lista*. Se agrega una columna adicional llamada "id" al DataFrame desanidado, que contiene el valor de la columna "id" de la fila original, asegurando que *cada fila desanidada tenga su correspondiente "id"*. **La función se ejecuta una vez por cada fila y devuelve un DataFrame desanidando esa fila específica, agregando en cada uno la columna id con el id correspondiente a la fila que se desanida del dataframe original**.<br>
+* Esta función se reutilizo para la columna crew, donde se le cambió el nombre y también la columna a desanidar dentro de la función.<br>
+* Guardo el desanidado de la columna cast en la variable "cast" y el desanidado de la columna crew en la variable "crew".
+* Hay que concatenar los dataframe que ahora se encuentran en una serie compuesta por los dataframes como datos, para ello primero hay que pasar la serie a lista y luego aplicar pd.concat en la lista, ignorando los indices (reiniciando los indices del dataframe final).
+* Elimine las columnas innecesarias: "credit_id" y "profile_path".

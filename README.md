@@ -1,8 +1,9 @@
 # Proyecto Individual 1
 ## Abril Lasso de la Vega
-
+**Este readme esta escrito desde el punto de vista del archivo de jupyter notebook, su paso a paso y orden.**
+**En el código del archivo .py hay comentarios más simples y pequeños cambios de orden, la explicación sirve para ambos.**
 ### ETL
-Empece por hacer las transformaciones pedidas y necesarias, comenzando con las más fáciles.:<br>
+Empecé por hacer las transformaciones pedidas y necesarias, comenzando con las más fáciles:<br>
 * Empiezo por los datos del archivo "movies_dataset.csv".<br>
     * Eliminé las columnas pedidas ["video","imdb_id","adult","original_title","poster_path" , "homepage"], innecesarias que no van a ser utilizadas.<br>
     * Verifique los valores de budget y revenue para ver lo que me esperaba en el valor de la columna a crear "return". Al ver los valores de nada se ve como va a dominar el return 0, tanto por el lado de budget 0 (en donde decidí dejar return igual a 0)
@@ -37,5 +38,5 @@ df_crew=pd.concat(crew, ignore_index=True)
 * Eliminé las columnas innecesarias: "credit_id" y "profile_path".<br>
 
 **Ahora desanido los datos de movies_dataset.csv**<br>
-Utilizando la misma función que antes y los mismos pasos, solo que esta vez renombro a la columna a agregar de id como "id_pelicula", ya que dentro de cada dato anidado parece haber propios id's pero no puedo editar los nombres de estos hasta que haya desanidado y hecho los nuevos dataframes.<br>
-Además el nombre "id_pelicula" aclara mejor el tipo de id.
+Utilizando la misma función que antes y los mismos pasos, solo que esta vez renombro a la columna a agregar de id como "id_pelicula", ya que dentro de cada dato anidado parece haber propios id's pero no puedo editar los nombres de estos hasta que haya desanidado y hecho los nuevos dataframes. Ademas como en este caso hay vacios hago que verifique si el array es vacio entonces que devuelva un dataframe vacio.<br>
+* **El nombre "id_pelicula" aclara mejor el tipo de id, asi que reemplazar todos los id que hagan referencia a la pelicula por este mismo nombre(va a verse los cambios en el código).**<br>

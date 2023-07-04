@@ -15,12 +15,13 @@ data.dropna(subset=["release_date"],inplace=True)
 
 # Creo la columna "return"
 data["budget"]=pd.to_numeric(data["budget"],errors="coerce")
-print(data["budget"].values)
 print(type(data["budget"][0]))
 
 # Ahora la idea es hacer la división pero con un try and except
-# en donde, si la división va a tirar un error sea porque budget es cero o vacio,
-# se le deja el valor cero a la nueva columna.
+# en donde, si la división va a tirar un error porque budget es vacio (ya aclaramos que tiene que ser distinto de cero),
+# se le deja el valor cero al nuevo valor de la lista.
+# Y si budget es cero entra en else y también se le agregaría un valor cero.
+
 columna=[]
 for i, j in zip(data["revenue"], data["budget"]):
     if j!=0:
@@ -53,15 +54,125 @@ data["id_pelicula"]=pd.to_numeric(data["id"],downcast="integer") # Me aseguro qu
 
 data=data[['id_pelicula', 'title','overview','status','runtime','popularity','belongs_to_collection','tagline','genres','original_language','spoken_languages','vote_average','vote_count','release_date','release_year','production_countries','production_companies','budget','revenue','return']]
 
-# Usar el otro archivo csv provisto
-
 # Desanidar los datos (como solo necesitamos los directores, desanidamos los datos de la columna "crew")
 
-# Esta función esta mejor explicada en el readme
 
+# Esta función esta mejor explicada en el readme
 def desanidar_crew(row):
+    '''
+    Se  aplica de la forma:
+    nueva_serie=dataframe.apply(desanidar_crew, axis=1).reset_index(drop=True)
+    Devuelve una serie en la que cada dato es un dataframe perteneciente a cada fila.
+    Esta función solo funciona para desanidar columnas llamadas "crew".
+    Para cambiar este valor se copia y pega la misma función y se cambia este nombre.
+    Si la columna tiene vacios o valores no aceptables en las transformaciones tira errores.
+    (más adelante se edito esto para columnas que tenían vacios).
+    '''
     cast_data = ast.literal_eval(row['crew'])
     desanidado = pd.json_normalize(cast_data)
-    desanidado['id'] = row['id']
+    desanidado['id_pelicula'] = row['id_pelicula']
     return desanidado
+
+# Agrego el "id_pelicula" 
+# asi me aseguro que el mismo id tenga el mismo nombre en todos los df
+df2["id_pelicula"]=df2["id"]
+df2.drop(columns=["id"],inplace=True)
+
+# Aplico la función y me quedo con una serie en la que cada dato es un dataframe (por cada fila un dataframe).
+
+crew=df2.apply(desanidar_crew, axis=1).reset_index(drop=True)
+
+# Transformo la serie en lista para poder juntar todos los dataframes pertenecientes a esta.
+
+crew=list(crew)
+df_crew=pd.concat(crew, ignore_index=True)
+
+# Elimino las columnas que considero innecesarias
+df_crew.drop(columns=["credit_id","profile_path"],inplace=True)
+
+# traigo la función anteriormente usada
+# Cambio en cada una la columna a desanidar
+# Noté que me salia error y se me ocurrió que podía ser debido a que en este caso las columnas tienen valores vacios.
+# Asi que ahora le agrego a las funciones que es caso de vacios regrese un dataframe vacio.
+
+def desanidar_belongs(row):
+    cast_data=row['belongs_to_collection']
+    if np.all(pd.isna(cast_data)) or cast_data == '':
+        return pd.DataFrame()  # Retorna un DataFrame vacío si la celda está vacía
+    cast_data = ast.literal_eval(cast_data)
+    desanidado = pd.json_normalize(cast_data)
+    desanidado['id_pelicula'] = row['id_pelicula']
+    return desanidado
+
+def desanidar_genres(row):
+    cast_data=row['genres']
+    if np.all(pd.isna(cast_data)) or cast_data == '':
+        return pd.DataFrame()  # Retorna un DataFrame vacío si la celda está vacía
+    cast_data = ast.literal_eval(cast_data)
+    desanidado = pd.json_normalize(cast_data)
+    desanidado['id_pelicula'] = row['id_pelicula']
+    return desanidado
+
+def desanidar_spoken_languages(row):
+    cast_data=row['spoken_languages']
+    if np.all(pd.isna(cast_data))  or cast_data == '':
+        return pd.DataFrame()  # Retorna un DataFrame vacío si la celda está vacía
+    cast_data = ast.literal_eval(cast_data)
+    desanidado = pd.json_normalize(cast_data)
+    desanidado['id_pelicula'] = row['id_pelicula']
+    return desanidado
+
+def desanidar_production_countries(row):
+    cast_data=row['production_countries']
+    if np.all(pd.isna(cast_data)) or cast_data == '':
+        return pd.DataFrame()  # Retorna un DataFrame vacío si la celda está vacía
+    cast_data = ast.literal_eval(cast_data)
+    desanidado = pd.json_normalize(cast_data)
+    desanidado['id_pelicula'] = row['id_pelicula']
+    return desanidado
+
+def desanidar_production_companies(row):
+    cast_data=row['production_companies']
+    if np.all(pd.isna(cast_data))  or cast_data == '':
+        return pd.DataFrame()  # Retorna un DataFrame vacío si la celda está vacía
+    cast_data = ast.literal_eval(row['production_companies'])
+    desanidado = pd.json_normalize(cast_data)
+    desanidado['id_pelicula'] = row['id_pelicula']
+    return desanidado
+
+# se desanida cada columna
+# personalmente prefiero quedarme con cada dato desanidado como dataframe aparte
+
+des_belongs=data.apply(desanidar_belongs, axis=1).reset_index(drop=True)
+des_genres=data.apply(desanidar_genres, axis=1).reset_index(drop=True)
+des_spoken_languages=data.apply(desanidar_spoken_languages, axis=1).reset_index(drop=True)
+des_production_countries=data.apply(desanidar_production_countries, axis=1).reset_index(drop=True)
+des_production_companies=data.apply(desanidar_production_companies, axis=1).reset_index(drop=True)
+
+
+#
+# Hago lista a la serie para poder concatenar cada uno de los dataframes ahora enlistados
+
+des_belongs=list(des_belongs)
+df_belongs=pd.concat(des_belongs, ignore_index=True)
+# Tiro estas columnas que me parecen innecesarias.
+df_belongs.drop(columns=["poster_path","backdrop_path"],inplace=True)
+
+# Ahora repetimos lo mismo en el resto de df
+
+# genres
+des_genres=list(des_genres)
+df_genres=pd.concat(des_genres, ignore_index=True)
+
+#spoken_languages
+des_spoken_languages=list(des_spoken_languages)
+df_spoken_languages=pd.concat(des_spoken_languages, ignore_index=True)
+
+#production_countries
+des_production_countries=list(des_production_countries)
+df_production_countries=pd.concat(des_production_countries, ignore_index=True)
+
+#production_companies
+des_production_companies=list(des_production_companies)
+df_production_companies=pd.concat(des_production_companies, ignore_index=True)
 

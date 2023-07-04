@@ -1,6 +1,6 @@
 # Proyecto Individual 1
 ## Abril Lasso de la Vega
-**Este readme esta escrito desde el punto de vista del archivo de jupyter notebook, su paso a paso y orden.**
+**Este readme esta escrito desde el punto de vista del archivo de jupyter notebook, su paso a paso y orden.**<br>
 **En el código del archivo .py hay comentarios más simples y pequeños cambios de orden, la explicación sirve para ambos.**
 ### ETL
 Empecé por hacer las transformaciones pedidas y necesarias, comenzando con las más fáciles:<br>

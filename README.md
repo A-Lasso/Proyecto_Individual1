@@ -2,6 +2,9 @@
 ## Abril Lasso de la Vega
 **Este readme esta escrito desde el punto de vista del archivo de jupyter notebook, su paso a paso y orden.**<br>
 **En el código del archivo .py hay comentarios más simples y cambios de orden, la explicación sirve para ambos.**
+
+- Recuerde que para que el código le funcione correctamente, debe cambiar la ruta del archivo en el pd.read_csv, a la ruta en la que se encuentre este en su pc.<br>
+
 ### ETL
 Empecé por hacer las transformaciones pedidas y necesarias, comenzando con las más fáciles:<br>
 * Empiezo por los datos del archivo "movies_dataset.csv".<br>
@@ -43,4 +46,8 @@ Utilizando la misma función que antes y los mismos pasos, solo que esta vez ren
 También hay funciones en las que agregue más columnas de los datos originales, para que más adelante a la hora de hacer las funciones para la API se utilicen los datos dentro de un mismo df, en lugar de andar comparando y llamando datos de dos df distintos.<br>
 
 **En el archivo .py hice una limpieza de datos innecesarios que trabajé en el .ipynb, asi corre más rápido y no ocupa espacio con df no utilizados, por eso en el archivo .ipynb van a ver que hay más df mientras que en el .py solo están los usados para todo el código.**
+
+### Funciones API
+- Para hacerlas utilice los dataframe que dividí desanidando (en mi caso en lugar de unirlos deje cada uno aparte).
+- En cada una de las funciones de desanidado agregue las columnas que necesitaba para estas funciones, y en la única que no podía (df_crew) comparé el id_pelicula dentro de la función y cree un dataframe dentro de esta que cumpliera el estar entre la lista generada de id's, también **realice un drop_duplicates()** de este dataframe creado asi no repetian filas, repitiendo valores de filas completas (exactamente mismas filas), generando returns, budget, etc, repetidos.
 

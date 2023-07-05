@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 import ast
+from fastapi import FastAPI
 
 # Transformaciones pedidas y necesarias
 # comenzando con las más fáciles
@@ -212,10 +213,10 @@ def peliculas_duracion(Pelicula):
     Debe escribir el titulo correctamente, es decir, como esta escrito originalmente (buscar en internet), en inglés y con las mayúsculas correctas.
     '''
     Pelicula=Pelicula.strip()
-    dur=str(data["runtime"][data["title"]==Pelicula][0])
-    Anio=str(int(data["release_year"][data["title"]==Pelicula][0]))
+    dur=data["runtime"][data["title"]==Pelicula].values[0]
+    Anio=int(data["release_year"][data["title"]==Pelicula].values[0])
     
-    return Pelicula + ". Duración:"+dur+ " min."+" Año:"+Anio
+    return Pelicula + ". Duración:"+ str(dur) + " min."+" Año:"+ str(Anio)
 
 def franquicia(Franquicia):
     '''
@@ -224,13 +225,12 @@ def franquicia(Franquicia):
     '''
     Franquicia=Franquicia.strip()
     df=df_belongs_to_collection[df_belongs_to_collection["name"]==Franquicia]
-    cant=df["name"].count()
-    id_peliculas=list(df["id_pelicula"].values)
-    rev=df["revenue"].sum()
-    bud=df['budget'].sum()
-    gan=rev-bud
     
-    return "La franquicia "+ Franquicia + " posee "+ str(cant) +" peliculas, una ganancia total de "+ str(gan) +" y una ganancia promedio de "+ str(gan/cant) +""
+    # Me aseguro que esten en mismo tipo de dato.
+    cant=float(df["name"].count())
+    rev=float(df["revenue"].sum())
+    
+    return "La franquicia "+ Franquicia + " posee "+ str(cant) +" peliculas, una ganancia total de "+ str(rev) +" y una ganancia promedio de "+ str(rev/cant) +""
 
 def peliculas_pais(Pais):
     '''
@@ -249,7 +249,16 @@ def productoras_exitosas(Productora):
     '''
     Productora=Productora.strip()
     df=df_production_companies[df_production_companies['name']==Productora]
+    
+
     suma=df['revenue'].sum()
     cant= df['name'].count()
+
     return "La productora "+ Productora + " ha tenido un revenue de " + str(suma) + " y realizó " + str(cant) + " peliculas."
+
+app = FastAPI()
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 

@@ -51,6 +51,11 @@ data.drop(labels=[19730,29503,35587],axis=0,inplace=True)
 
 data["id_pelicula"]=pd.to_numeric(data["id"],downcast="integer") # Me aseguro que quede en formato numerico para después poder comparar con este id
 
+# Elimino los duplicados
+# Filas que se detectan exactamente iguales.
+
+data.drop_duplicates(inplace=True)
+
 # La forma en la que yo quiero ordenadas las columnas
 
 data=data[['id_pelicula', 'title','overview','status','runtime','popularity','belongs_to_collection','tagline','genres','original_language','spoken_languages','vote_average','vote_count','release_date','release_year','production_countries','production_companies','budget','revenue','return']]

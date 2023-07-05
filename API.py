@@ -7,11 +7,11 @@ from fastapi import FastAPI
 
 # Usamos: data,df_belongs_to_collection,df_production_countries,df_production_companies,df_crew
 
-data=pd.read_csv("DataScience_Henry\Proyecto_Individual1\csv_limpios\data.csv")
-df_belongs_to_collection=pd.read_csv("DataScience_Henry\Proyecto_Individual1\csv_limpios\collection.csv")
-df_production_countries=pd.read_csv("DataScience_Henry\Proyecto_Individual1\csv_limpios\countries.csv")
-df_production_companies=pd.read_csv("DataScience_Henry\Proyecto_Individual1\csv_limpios\companies.csv")
-df_crew=pd.read_csv("DataScience_Henry\Proyecto_Individual1\csv_limpios\crew.csv")
+data=pd.read_csv(".\csv_limpios\data.csv")
+df_belongs_to_collection=pd.read_csv(".\csv_limpios\collection.csv")
+df_production_countries=pd.read_csv(".\csv_limpios\countries.csv")
+df_production_companies=pd.read_csv(".\csv_limpios\companies.csv")
+df_crew=pd.read_csv(".\csv_limpios\crew.csv")
 
 # instanciamos FastAPI
 
@@ -20,7 +20,7 @@ app = FastAPI()
 # Funciones para la API 
 
 @app.get("/peliculas/idioma/{idioma}")
-def peliculas_idioma(idioma:str):
+def peliculas_idioma(idioma):
     '''
     - Ingresa el idioma, sale la cantidad de peliculas estrenadas en ese idioma.
 
@@ -38,7 +38,7 @@ def peliculas_idioma(idioma:str):
     idioma=idioma.strip()
     count1= str(data["original_language"][data["original_language"]==idioma].count())
 
-    return count1 + ' cantidad de películas fueron estrenadas en '+ '"' + idioma + '"'
+    return "{} cantidad de películas fueron estrenadas en '{}' ".format(count1,idioma)
 
 @app.get("/peliculas/duracion/{Pelicula}")
 def peliculas_duracion(Pelicula):
@@ -63,13 +63,13 @@ def peliculas_duracion(Pelicula):
     else:
         return "No hay pelicula con ese titulo"
        
-    return "{} . Duración: {} min. Año:{}. ".format(Pelicula,dur,Anio)
+    return "{} . Duración: {} minutos. Año:{}. ".format(Pelicula,dur,Anio)
 
 @app.get("/franquicia/{Franquicia}")
 def franquicia(Franquicia:str):
     '''
     - Para esta función se debe escribir bien el nombre de la pelicula, exactamente al publicado oficial.
-    - Luego del nombre de la pelicula se debe agregar la palabra "Collection", exactamente como esta escrita entre las comillas.
+    - Luego del nombre de la pelicula se debe agregar la palabra "Collection", exactamente como esta escrita (sin las comillas).
     '''
     Franquicia=Franquicia.strip()
     df=df_belongs_to_collection[df_belongs_to_collection["name"]==Franquicia]
@@ -77,8 +77,14 @@ def franquicia(Franquicia:str):
     # Me aseguro que esten en mismo tipo de dato.
     cant=float(df["name"].count())
     rev=float(df["revenue"].sum())
-    
-    return "La franquicia "+ Franquicia + " posee "+ str(cant) +" peliculas, una ganancia total de "+ str(rev) +" y una ganancia promedio de "+ str(rev/cant) +""
+    if df['name'].count().sum()==0:
+        return "No se encuentra la franquicia {}".format(Franquicia)
+    else:
+        if cant!=0:
+            prom=str(rev/cant)
+        else:
+            prom=0
+    return "La franquicia "+ Franquicia + " posee "+ str(cant) +" peliculas, una ganancia total de "+ str(rev) +" y una ganancia promedio de "+ prom +""
 
 @app.get("/peliculas/pais/{Pais}")
 def peliculas_pais(Pais:str):
@@ -90,7 +96,7 @@ def peliculas_pais(Pais:str):
     Pais=Pais.strip()
     cant = df_production_countries["name"][df_production_countries["name"]==Pais].count()
     
-    return "Se produjeron " + str(cant) + " películas en el país" + Pais
+    return "Se produjeron " + str(cant) + " películas en el país " + Pais
 
 @app.get("/productoras_exitosas/{Productora}")
 def productoras_exitosas(Productora:str):
@@ -117,6 +123,8 @@ def get_director(nombre_director:str):
 
     nombre_director=nombre_director.strip()
     df=df_crew[df_crew["job"]=='Director'][df_crew['name']==nombre_director]
+    if df['name'].count().sum()==0:
+        return "No se encuentra el director {} o no es un director.".format(nombre_director)
     id_pel=list(df['id_pelicula'].values)
     df2=data[data['id_pelicula'].isin(id_pel)]
     
@@ -125,10 +133,10 @@ def get_director(nombre_director:str):
     
     # Transformo la columna para que me de solamente la fecha
     # Ya que al querer listarla me deja valores donde da hora y además dice que es un tipo timestamp
-    df2['release_date']=df2['release_date'].dt.strftime('%Y-%m-%d')
+    #df2['release_date']=df2['release_date'].dt.strftime('%Y-%m-%d') En este caso no es necesario ya que se importó como string.
     exito=df2["return"].sum()
     # Hacer la lista de lo pedido
     lista_de_listas=df2.values.tolist()
 
-    return "El director {} tiene un éxito de {}. {} {}.".format(nombre_director, exito,'\n',lista_de_listas)
+    return "El director {} tiene un éxito de {}. Y sus peliculas son {}.".format(nombre_director, exito,lista_de_listas)
 

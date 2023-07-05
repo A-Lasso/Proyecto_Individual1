@@ -3,6 +3,10 @@
 **Este readme esta escrito desde el punto de vista del archivo de jupyter notebook, su paso a paso y orden.**<br>
 **En el código del archivo .py hay comentarios más simples y cambios de orden, la explicación sirve para ambos.**
 
+- En el archivo ETL.py se encuentran todas las transformaciones que hice y luego guardé los .csv ya limpios, ordenados y de la forma que quería.
+
+- En el archivo API.py se tienen las funciones para la API, se traen los csv limpios, y se trabaja toda la parte de API allí.
+
 - Recuerde que para que el código le funcione correctamente, debe cambiar la ruta del archivo en el pd.read_csv, a la ruta en la que se encuentre este en su pc.<br>
 
 ### ETL

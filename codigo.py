@@ -171,8 +171,9 @@ des_genres=list(des_genres)
 df_genres=pd.concat(des_genres, ignore_index=True)
 
 #spoken_languages
-des_spoken_languages=list(des_spoken_languages)
-df_spoken_languages=pd.concat(des_spoken_languages, ignore_index=True)
+# Es innecesario asi que no lo corro.
+#des_spoken_languages=list(des_spoken_languages)
+#df_spoken_languages=pd.concat(des_spoken_languages, ignore_index=True)
 
 #production_countries
 des_production_countries=list(des_production_countries)
@@ -186,79 +187,11 @@ df_production_companies=pd.concat(des_production_companies, ignore_index=True)
 
 data.drop(columns=["belongs_to_collection","genres","spoken_languages","production_countries","production_companies"],inplace=True)
 
-# Funciones para la API 
+# Ahora guardo los nuevos csv ya limpios 
+# Usamos: data,df_belongs_to_collection,df_production_countries,df_production_companies,df_crew
 
-def peliculas_idioma(idioma):
-    '''
-    - Ingresa el idioma, sale la cantidad de peliculas estrenadas en ese idioma.
-
-    - Debe ingresar el abreviado del idioma a buscar, las opciones son las de la siguiente lista:
-    ['en', 'fr', 'zh', 'it', 'fa', 'nl', 'de', 'cn', 'ar', 'es', 'ru',
-    'sv', 'ja', 'ko', 'sr', 'bn', 'he', 'pt', 'wo', 'ro', 'hu', 'cy',
-    'vi', 'cs', 'da', 'no', 'nb', 'pl', 'el', 'sh', 'xx', 'mk', 'bo',
-    'ca', 'fi', 'th', 'sk', 'bs', 'hi', 'tr', 'is', 'ps', 'ab', 'eo',
-    'ka', 'mn', 'bm', 'zu', 'uk', 'af', 'la', 'et', 'ku', 'fy', 'lv',
-    'ta', 'sl', 'tl', 'ur', 'rw', 'id', 'bg', 'mr', 'lt', 'kk', 'ms',
-    'sq', nan, 'qu', 'te', 'am', 'jv', 'tg', 'ml', 'hr', 'lo', 'ay',
-    'kn', 'eu', 'ne', 'pa', 'ky', 'gl', 'uz', 'sm', 'mt', 'hy', 'iu',
-    'lb', 'si']
-    '''
-    idioma=idioma.strip()
-    count1= str(data["original_language"][data["original_language"]==idioma].count())
-
-    return count1 + ' cantidad de películas fueron estrenadas en '+'"' + idioma+ '"'
-
-def peliculas_duracion(Pelicula):
-    '''
-    Debe escribir el titulo correctamente, es decir, como esta escrito originalmente (buscar en internet), en inglés y con las mayúsculas correctas.
-    '''
-    Pelicula=Pelicula.strip()
-    dur=data["runtime"][data["title"]==Pelicula].values[0]
-    Anio=int(data["release_year"][data["title"]==Pelicula].values[0])
-    
-    return Pelicula + ". Duración:"+ str(dur) + " min."+" Año:"+ str(Anio)
-
-def franquicia(Franquicia):
-    '''
-    - Para esta función se debe escribir bien el nombre de la pelicula, exactamente al publicado oficial.
-    - Luego del nombre de la pelicula se debe agregar la palabra "Collection", exactamente como esta escrita entre las comillas.
-    '''
-    Franquicia=Franquicia.strip()
-    df=df_belongs_to_collection[df_belongs_to_collection["name"]==Franquicia]
-    
-    # Me aseguro que esten en mismo tipo de dato.
-    cant=float(df["name"].count())
-    rev=float(df["revenue"].sum())
-    
-    return "La franquicia "+ Franquicia + " posee "+ str(cant) +" peliculas, una ganancia total de "+ str(rev) +" y una ganancia promedio de "+ str(rev/cant) +""
-
-def peliculas_pais(Pais):
-    '''
-    - Recibe el Pais y devuelve la cantidad de peliculas producidas en este.
-    - El idioma en el que se debe escribir el nombre del país es inglés, respetando los espacios y mayúsculas de cada nombre.
-    - Si no le sale, verifique que esta escribiendo bien el país.
-    '''
-    Pais=Pais.strip()
-    cant = df_production_countries["name"][df_production_countries["name"]==Pais].count()
-    
-    return "Se produjeron " + str(cant) + " películas en el país" + Pais
-
-def productoras_exitosas(Productora):
-    '''
-    - Recibe la productora y devuelve el revenue total que obtuvo y la cantidad de peliculas realizadas.
-    '''
-    Productora=Productora.strip()
-    df=df_production_companies[df_production_companies['name']==Productora]
-    
-
-    suma=df['revenue'].sum()
-    cant= df['name'].count()
-
-    return "La productora "+ Productora + " ha tenido un revenue de " + str(suma) + " y realizó " + str(cant) + " peliculas."
-
-app = FastAPI()
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
+data.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv_limpios\data.csv",index=False)
+df_belongs_to_collection.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv_limpios\collection.csv",index=False)
+df_production_countries.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv_limpios\countries.csv",index=False)
+df_production_companies.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv_limpios\companies.csv",index=False)
+df_crew.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv_limpios\crew.csv",index=False)

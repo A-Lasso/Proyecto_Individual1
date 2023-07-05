@@ -61,16 +61,17 @@ data=data[['id_pelicula', 'title','overview','status','runtime','popularity','be
 def desanidar_crew(row):
     '''
     Se  aplica de la forma:
-    nueva_serie=dataframe.apply(desanidar_crew, axis=1).reset_index(drop=True)
-    Devuelve una serie en la que cada dato es un dataframe perteneciente a cada fila.
-    Esta función solo funciona para desanidar columnas llamadas "crew".
+    - nueva_serie=dataframe.apply(desanidar_crew, axis=1).reset_index(drop=True).
+    - Devuelve una serie en la que cada dato es un dataframe perteneciente a cada fila.
+    - Esta función solo funciona para desanidar columnas llamadas "crew".
     Para cambiar este valor se copia y pega la misma función y se cambia este nombre.
     Si la columna tiene vacios o valores no aceptables en las transformaciones tira errores.
-    (más adelante se edito esto para columnas que tenían vacios).
+    (más adelante se editó esto para columnas que tenían vacios).
     '''
     cast_data = ast.literal_eval(row['crew'])
     desanidado = pd.json_normalize(cast_data)
     desanidado['id_pelicula'] = row['id_pelicula']
+
     return desanidado
 
 # Agrego el "id_pelicula" 
@@ -233,8 +234,9 @@ def franquicia(Franquicia):
 
 def peliculas_pais(Pais):
     '''
-    El idioma en el que se debe escribir el nombre es inglés, respetando los espacios y mayúsculas de cada nombre.
-    Si no le sale, verifique que esta escribiendo bien el país.
+    - Recibe el Pais y devuelve la cantidad de peliculas producidas en este.
+    - El idioma en el que se debe escribir el nombre del país es inglés, respetando los espacios y mayúsculas de cada nombre.
+    - Si no le sale, verifique que esta escribiendo bien el país.
     '''
     Pais=Pais.strip()
     cant = df_production_countries["name"][df_production_countries["name"]==Pais].count()
@@ -242,8 +244,12 @@ def peliculas_pais(Pais):
     return "Se produjeron " + str(cant) + " películas en el país" + Pais
 
 def productoras_exitosas(Productora):
+    '''
+    - Recibe la productora y devuelve el revenue total que obtuvo y la cantidad de peliculas realizadas.
+    '''
     Productora=Productora.strip()
     df=df_production_companies[df_production_companies['name']==Productora]
     suma=df['revenue'].sum()
-    return "La productora "+ Productora + " ha tenido un revenue de " + str(suma)
+    cant= df['name'].count()
+    return "La productora "+ Productora + " ha tenido un revenue de " + str(suma) + " y realizó " + str(cant) + " peliculas."
 

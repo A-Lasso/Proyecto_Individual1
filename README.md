@@ -1,7 +1,7 @@
 # Proyecto Individual 1
 ## Abril Lasso de la Vega
 **Este readme esta escrito desde el punto de vista del archivo de jupyter notebook, su paso a paso y orden.**<br>
-**En el código del archivo .py hay comentarios más simples y pequeños cambios de orden, la explicación sirve para ambos.**
+**En el código del archivo .py hay comentarios más simples y cambios de orden, la explicación sirve para ambos.**
 ### ETL
 Empecé por hacer las transformaciones pedidas y necesarias, comenzando con las más fáciles:<br>
 * Empiezo por los datos del archivo "movies_dataset.csv".<br>
@@ -14,11 +14,12 @@ Empecé por hacer las transformaciones pedidas y necesarias, comenzando con las 
     * Ahora paso a crear la siguiente columna pedida "release_year", para esto primero tuve que transformar la columna "release_date" a datetime y que en caso de que tire error (no es una fecha como tal o no esta en el formato correcto) me va a llenar con vacio. Luego cree la nueva columna de los años con `"data["release_year"]=data["release_date"].dt.year"` 
     * Eliminé tres filas que eran completamente inusables, no solamente están llenas de vacios, sino que los pocos valores que tienen parecen estar intercambiados, y no sabría cómo sería el reordenamiento correcto. Justamente este desorden trajo mayores vacios, las fechas fueron imposibles de calcular. `data.drop(labels=[19730,29503,35587],axis=0,inplace=True)`.<br>
 
-**Terminé re acomodando las columnas del dataframe por simple gusto, el orden es a ojo y no cambia los valores ni los futuros resultados.**
+**Terminé re acomodando las columnas del dataframe por simple gusto, el orden es a ojo y no cambia los valores ni los futuros resultados.**<br>
+* **El nombre "id_pelicula" aclara mejor el tipo de id, asi que reemplacé todos los id que hagan referencia a la pelicula por este mismo nombre(va a verse los cambios en el código).**<br>
 
 #### Desanidado
-*Decidi un apartado para esto dentro de ETL ya que requiere mayor desarrollo que simplemente hacer una columna*<br>
-**Empecé con el segundo csv provisto** de donde sacamos cast y crew(columna donde se encuentran los directores), como pueden apreciar también desanide una columna innecesariamente porque en el momento no me dí cuenta, pero tampoco quise eliminar ese proceso, fue la primer columna que desanide y de ella me base para el resto.<br>
+*Decidí un apartado para esto dentro de ETL ya que requiere mayor desarrollo que simplemente hacer una columna*<br>
+**Empecé con el segundo csv provisto** de donde sacamos cast y crew(columna donde se encuentran los directores), como pueden apreciar también desanide una columna innecesariamente porque en el momento no me dí cuenta, pero tampoco quise eliminar ese proceso, fue la primer columna que desanide y de ella me base para el resto(para el archivo .py deje solamente las cosas utilizadas más adelante del codigo).<br>
 Para desanidar utilicé la función:<br>
 ```python
 def desanidar_cast(row):
@@ -39,4 +40,7 @@ df_crew=pd.concat(crew, ignore_index=True)
 
 **Ahora desanido los datos de movies_dataset.csv**<br>
 Utilizando la misma función que antes y los mismos pasos, solo que esta vez renombro a la columna a agregar de id como "id_pelicula", ya que dentro de cada dato anidado parece haber propios id's pero no puedo editar los nombres de estos hasta que haya desanidado y hecho los nuevos dataframes. Ademas como en este caso hay vacios hago que verifique si el array es vacio entonces que devuelva un dataframe vacio.<br>
-* **El nombre "id_pelicula" aclara mejor el tipo de id, asi que reemplazar todos los id que hagan referencia a la pelicula por este mismo nombre(va a verse los cambios en el código).**<br>
+También hay funciones en las que agregue más columnas de los datos originales, para que más adelante a la hora de hacer las funciones para la API se utilicen los datos dentro de un mismo df, en lugar de andar comparando y llamando datos de dos df distintos.<br>
+
+**En el archivo .py hice una limpieza de datos innecesarios que trabajé en el .ipynb, asi corre más rápido y no ocupa espacio con df no utilizados, por eso en el archivo .ipynb van a ver que hay más df mientras que en el .py solo están los usados para todo el código.**
+

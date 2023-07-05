@@ -102,6 +102,9 @@ def desanidar_belongs(row):
     cast_data = ast.literal_eval(cast_data)
     desanidado = pd.json_normalize(cast_data)
     desanidado['id_pelicula'] = row['id_pelicula']
+    desanidado['revenue']=row['revenue']
+    desanidado['budget']=row['budget']
+    # Agrego estas columnas porque más adelante para las funciones de API es mucho más útil y fácil
     return desanidado
 
 def desanidar_genres(row):
@@ -138,6 +141,7 @@ def desanidar_production_companies(row):
     cast_data = ast.literal_eval(row['production_companies'])
     desanidado = pd.json_normalize(cast_data)
     desanidado['id_pelicula'] = row['id_pelicula']
+    desanidado['revenue']=row['revenue']
     return desanidado
 
 # se desanida cada columna
@@ -154,9 +158,9 @@ des_production_companies=data.apply(desanidar_production_companies, axis=1).rese
 # Hago lista a la serie para poder concatenar cada uno de los dataframes ahora enlistados
 
 des_belongs=list(des_belongs)
-df_belongs=pd.concat(des_belongs, ignore_index=True)
+df_belongs_to_collection=pd.concat(des_belongs, ignore_index=True)
 # Tiro estas columnas que me parecen innecesarias.
-df_belongs.drop(columns=["poster_path","backdrop_path"],inplace=True)
+df_belongs_to_collection.drop(columns=["poster_path","backdrop_path"],inplace=True)
 
 # Ahora repetimos lo mismo en el resto de df
 
@@ -175,4 +179,71 @@ df_production_countries=pd.concat(des_production_countries, ignore_index=True)
 #production_companies
 des_production_companies=list(des_production_companies)
 df_production_companies=pd.concat(des_production_companies, ignore_index=True)
+
+# Elimino las columnas anidadas del dataframe "data" ahora ya innecesarias.
+
+data.drop(columns=["belongs_to_collection","genres","spoken_languages","production_countries","production_companies"],inplace=True)
+
+# Funciones para la API 
+
+def peliculas_idioma(idioma):
+    '''
+    - Ingresa el idioma, sale la cantidad de peliculas estrenadas en ese idioma.
+
+    - Debe ingresar el abreviado del idioma a buscar, las opciones son las de la siguiente lista:
+    ['en', 'fr', 'zh', 'it', 'fa', 'nl', 'de', 'cn', 'ar', 'es', 'ru',
+    'sv', 'ja', 'ko', 'sr', 'bn', 'he', 'pt', 'wo', 'ro', 'hu', 'cy',
+    'vi', 'cs', 'da', 'no', 'nb', 'pl', 'el', 'sh', 'xx', 'mk', 'bo',
+    'ca', 'fi', 'th', 'sk', 'bs', 'hi', 'tr', 'is', 'ps', 'ab', 'eo',
+    'ka', 'mn', 'bm', 'zu', 'uk', 'af', 'la', 'et', 'ku', 'fy', 'lv',
+    'ta', 'sl', 'tl', 'ur', 'rw', 'id', 'bg', 'mr', 'lt', 'kk', 'ms',
+    'sq', nan, 'qu', 'te', 'am', 'jv', 'tg', 'ml', 'hr', 'lo', 'ay',
+    'kn', 'eu', 'ne', 'pa', 'ky', 'gl', 'uz', 'sm', 'mt', 'hy', 'iu',
+    'lb', 'si']
+    '''
+    idioma=idioma.strip()
+    count1= str(data["original_language"][data["original_language"]==idioma].count())
+
+    return count1 + ' cantidad de películas fueron estrenadas en '+'"' + idioma+ '"'
+
+def peliculas_duracion(Pelicula):
+    '''
+    Debe escribir el titulo correctamente, es decir, como esta escrito originalmente (buscar en internet), en inglés y con las mayúsculas correctas.
+    '''
+    Pelicula=Pelicula.strip()
+    dur=str(data["runtime"][data["title"]==Pelicula][0])
+    Anio=str(int(data["release_year"][data["title"]==Pelicula][0]))
+    
+    return Pelicula + ". Duración:"+dur+ " min."+" Año:"+Anio
+
+def franquicia(Franquicia):
+    '''
+    - Para esta función se debe escribir bien el nombre de la pelicula, exactamente al publicado oficial.
+    - Luego del nombre de la pelicula se debe agregar la palabra "Collection", exactamente como esta escrita entre las comillas.
+    '''
+    Franquicia=Franquicia.strip()
+    df=df_belongs_to_collection[df_belongs_to_collection["name"]==Franquicia]
+    cant=df["name"].count()
+    id_peliculas=list(df["id_pelicula"].values)
+    rev=df["revenue"].sum()
+    bud=df['budget'].sum()
+    gan=rev-bud
+    
+    return "La franquicia "+ Franquicia + " posee "+ str(cant) +" peliculas, una ganancia total de "+ str(gan) +" y una ganancia promedio de "+ str(gan/cant) +""
+
+def peliculas_pais(Pais):
+    '''
+    El idioma en el que se debe escribir el nombre es inglés, respetando los espacios y mayúsculas de cada nombre.
+    Si no le sale, verifique que esta escribiendo bien el país.
+    '''
+    Pais=Pais.strip()
+    cant = df_production_countries["name"][df_production_countries["name"]==Pais].count()
+    
+    return "Se produjeron " + str(cant) + " películas en el país" + Pais
+
+def productoras_exitosas(Productora):
+    Productora=Productora.strip()
+    df=df_production_companies[df_production_companies['name']==Productora]
+    suma=df['revenue'].sum()
+    return "La productora "+ Productora + " ha tenido un revenue de " + str(suma)
 

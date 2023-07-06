@@ -115,7 +115,8 @@ def productoras_exitosas(Productora:str):
 @app.get("/director/{nombre_director}")
 def get_director(nombre_director:str):
     '''
-    - Toma un solo nombre a la vez
+    - Toma un solo nombre a la vez.
+
     Devuelve el director con su exito (suma de return de todas sus peliculas), y luego una lista de listas.
     Cada lista dentro es una pelicula del director, los valores dentro de esas listas son : 
     [NombrePelicula,FechaLanzamiento,retorno,costo,ganacia] siendo estos sacados de las columnas (en mismo orden)= ['title','release_date','return','budget','revenue']
@@ -138,5 +139,4 @@ def get_director(nombre_director:str):
     # Hacer la lista de lo pedido
     lista_de_listas=df2.values.tolist()
 
-    resultado = "El director {} tiene un éxito de {}. Y sus películas son:\n{}".format(nombre_director, exito, '\n'.join(map(str, lista_de_listas)))
-    return resultado
+    return "El director {} tiene un éxito de {}. Y sus peliculas son {}.".format(nombre_director, exito,lista_de_listas)

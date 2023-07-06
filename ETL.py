@@ -2,7 +2,6 @@
 import pandas as pd
 import numpy as np
 import ast
-from fastapi import FastAPI
 
 # Transformaciones pedidas y necesarias
 # comenzando con las más fáciles

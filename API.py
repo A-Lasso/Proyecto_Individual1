@@ -1,7 +1,6 @@
 # Se importan las librerias usadas en el código
 import pandas as pd
 import numpy as np
-import ast
 from fastapi import FastAPI
 
 
@@ -44,6 +43,7 @@ def peliculas_idioma(idioma):
 def peliculas_duracion(Pelicula):
     '''
     Debe escribir el titulo correctamente, es decir, como esta escrito originalmente (buscar en internet), en inglés y con las mayúsculas correctas.
+    Devuelve un diccionario.
     Si hay una sola pelicula con ese nombre, devuelve la duración y su año de estreno.
     De haber más de una con ese nombre, devuelve una lista de duración y otra de los años, en las que coinciden sus ordenes (primer indice de la duración es de la pelicula que salió en el primer indice de los años, asi sucesivamente).
     En caso de escribir un nombre que no se encuentre en la base de datos, devuelve: "No hay pelicula con ese titulo".
@@ -63,7 +63,7 @@ def peliculas_duracion(Pelicula):
     else:
         return "No hay pelicula con ese titulo"
        
-    return "{} . Duración: {} minutos. Año:{}. ".format(Pelicula,dur,Anio)
+    return {'Pelicula ':Pelicula,'Duracion':dur,'Anio':Anio}
 
 @app.get("/franquicia/{Franquicia}")
 def franquicia(Franquicia:str):
@@ -83,7 +83,7 @@ def franquicia(Franquicia:str):
         if cant!=0:
             prom=str(rev/cant)
         else:
-            prom=0
+            prom='0'
     return "La franquicia "+ Franquicia + " posee "+ str(cant) +" peliculas, una ganancia total de "+ str(rev) +" y una ganancia promedio de "+ prom +""
 
 @app.get("/peliculas/pais/{Pais}")
@@ -120,7 +120,7 @@ def get_director(nombre_director:str):
     '''
     - Toma un solo nombre a la vez.
 
-    Devuelve en un diccionario el director con su exito (suma de return de todas sus peliculas), y luego el nombre de cada una de sus peliculas 
+    Devuelve en un diccionario= el director con su exito (suma de return de todas sus peliculas), y luego el nombre de cada una de sus peliculas con su titulo,fecha de estreno,return(ganancia/costo),budget(costo) y revenue(ganancia).
     '''
 
     nombre_director=nombre_director.strip()
@@ -148,3 +148,9 @@ def get_director(nombre_director:str):
     return {'director':nombre_director, 'retorno_total_director':exito, 
     'peliculas':peliculas, 'anio':fecha, 'retorno_pelicula':retun, 
     'budget_pelicula':budget, 'revenue_pelicula':revenue}
+
+# ML
+@app.get('/recomendacion/{titulo}')
+def recomendacion(titulo:str):
+    '''Ingresas un nombre de pelicula y te recomienda las similares en una lista'''
+    return {'lista recomendada': titulo}

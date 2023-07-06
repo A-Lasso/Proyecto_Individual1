@@ -105,7 +105,8 @@ def productoras_exitosas(Productora:str):
     '''
     Productora=Productora.strip()
     df=df_production_companies[df_production_companies['name']==Productora]
-    
+    if df['name'].count().sum()==0:
+        return "No se encuentran datos de esta productora."
 
     suma=df['revenue'].sum()
     cant= df['name'].count()

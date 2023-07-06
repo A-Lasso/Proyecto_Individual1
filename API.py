@@ -31,7 +31,7 @@ def peliculas_idioma(idioma):
     'ca', 'fi', 'th', 'sk', 'bs', 'hi', 'tr', 'is', 'ps', 'ab', 'eo',
     'ka', 'mn', 'bm', 'zu', 'uk', 'af', 'la', 'et', 'ku', 'fy', 'lv',
     'ta', 'sl', 'tl', 'ur', 'rw', 'id', 'bg', 'mr', 'lt', 'kk', 'ms',
-    'sq', nan, 'qu', 'te', 'am', 'jv', 'tg', 'ml', 'hr', 'lo', 'ay',
+    'sq', 'qu', 'te', 'am', 'jv', 'tg', 'ml', 'hr', 'lo', 'ay',
     'kn', 'eu', 'ne', 'pa', 'ky', 'gl', 'uz', 'sm', 'mt', 'hy', 'iu',
     'lb', 'si']
     '''
@@ -95,6 +95,8 @@ def peliculas_pais(Pais:str):
     '''
     Pais=Pais.strip()
     cant = df_production_countries["name"][df_production_countries["name"]==Pais].count()
+    if cant==0:
+        return "Este país no ha realizado peliculas o se encuentra mal escrito."
     
     return "Se produjeron " + str(cant) + " películas en el país " + Pais
 
@@ -118,9 +120,7 @@ def get_director(nombre_director:str):
     '''
     - Toma un solo nombre a la vez.
 
-    Devuelve el director con su exito (suma de return de todas sus peliculas), y luego una lista de listas.
-    Cada lista dentro es una pelicula del director, los valores dentro de esas listas son : 
-    [NombrePelicula,FechaLanzamiento,retorno,costo,ganacia] siendo estos sacados de las columnas (en mismo orden)= ['title','release_date','return','budget','revenue']
+    Devuelve en un diccionario el director con su exito (suma de return de todas sus peliculas), y luego el nombre de cada una de sus peliculas 
     '''
 
     nombre_director=nombre_director.strip()
@@ -138,6 +138,13 @@ def get_director(nombre_director:str):
     #df2['release_date']=df2['release_date'].dt.strftime('%Y-%m-%d') En este caso no es necesario ya que se importó como string.
     exito=df2["return"].sum()
     # Hacer la lista de lo pedido
-    lista_de_listas=df2.values.tolist()
+    peliculas=df2['title'].tolist()
+    fecha=df2['release_date'].tolist()
+    retun=df2['return'].tolist()
+    budget=df2['budget'].tolist()
+    revenue=df2['revenue'].tolist()
 
-    return "El director {} tiene un éxito de {}. Y sus peliculas son {}.".format(nombre_director, exito,lista_de_listas)
+
+    return {'director':nombre_director, 'retorno_total_director':exito, 
+    'peliculas':peliculas, 'anio':fecha, 'retorno_pelicula':retun, 
+    'budget_pelicula':budget, 'revenue_pelicula':revenue}

@@ -138,5 +138,5 @@ def get_director(nombre_director:str):
     # Hacer la lista de lo pedido
     lista_de_listas=df2.values.tolist()
 
-    return "El director {} tiene un éxito de {}. Y sus peliculas son {}.".format(nombre_director, exito,lista_de_listas)
-
+    resultado = "El director {} tiene un éxito de {}. Y sus películas son:\n{}".format(nombre_director, exito, '\n'.join(map(str, lista_de_listas)))
+    return resultado

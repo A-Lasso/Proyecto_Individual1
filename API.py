@@ -7,7 +7,7 @@ from fastapi import FastAPI
 
 # Usamos: data,df_belongs_to_collection,df_production_countries,df_production_companies,df_crew
 
-data=pd.read_csv(".\csv_limpios\data.csv")
+data=pd.read_csv("csv_limpios/data.csv")
 df_belongs_to_collection=pd.read_csv(".\csv_limpios\collection.csv")
 df_production_countries=pd.read_csv(".\csv_limpios\countries.csv")
 df_production_companies=pd.read_csv(".\csv_limpios\companies.csv")

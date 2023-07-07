@@ -11,6 +11,7 @@ df_belongs_to_collection=pd.read_csv("csv_limpios/collection.csv")
 df_production_countries=pd.read_csv("csv_limpios/countries.csv")
 df_production_companies=pd.read_csv("csv_limpios/companies.csv")
 df_crew=pd.read_csv("csv_limpios/crew.csv")
+df_genres=pd.read_csv("csv_limpios/genres.csv")
 
 # instanciamos FastAPI
 
@@ -98,7 +99,7 @@ def peliculas_pais(Pais:str):
     if cant==0:
         return "Este país no ha realizado peliculas o se encuentra mal escrito."
     
-    return "Se produjeron " + str(cant) + " películas en el país " + Pais
+    return {"Pais": Pais,"Cantidad":cant}
 
 @app.get("/productoras_exitosas/{Productora}")
 def productoras_exitosas(Productora:str):
@@ -113,7 +114,7 @@ def productoras_exitosas(Productora:str):
     suma=df['revenue'].sum()
     cant= df['name'].count()
 
-    return "La productora "+ Productora + " ha tenido un revenue de " + str(suma) + " y realizó " + str(cant) + " peliculas."
+    return {"Productora": Productora , "Revenue ": suma ,  "Cantidad": cant}
 
 @app.get("/director/{nombre_director}")
 def get_director(nombre_director:str):

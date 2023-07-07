@@ -79,6 +79,12 @@ def desanidar_crew(row):
 
     return desanidado
 
+def desanidar_cast(row):
+    cast_data = ast.literal_eval(row['cast'])
+    desanidado = pd.json_normalize(cast_data)
+    desanidado['id_pelicula'] = row['id_pelicula']
+    return desanidado
+
 # Agrego el "id_pelicula" 
 # asi me aseguro que el mismo id tenga el mismo nombre en todos los df
 df2["id_pelicula"]=df2["id"]
@@ -87,11 +93,14 @@ df2.drop(columns=["id"],inplace=True)
 # Aplico la función y me quedo con una serie en la que cada dato es un dataframe (por cada fila un dataframe).
 
 crew=df2.apply(desanidar_crew, axis=1).reset_index(drop=True)
+cast=df2.apply(desanidar_cast, axis=1).reset_index(drop=True)
 
 # Transformo la serie en lista para poder juntar todos los dataframes pertenecientes a esta.
 
 crew=list(crew)
 df_crew=pd.concat(crew, ignore_index=True)
+cast=list(cast)
+df_cast=pd.concat(cast, ignore_index=True)
 
 # Elimino las columnas que considero innecesarias
 df_crew.drop(columns=["credit_id","profile_path"],inplace=True)
@@ -194,8 +203,11 @@ data.drop(columns=["belongs_to_collection","genres","spoken_languages","producti
 # Ahora guardo los nuevos csv ya limpios 
 # Usamos: data,df_belongs_to_collection,df_production_countries,df_production_companies,df_crew
 
-data.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv_limpios\data.csv",index=False)
-df_belongs_to_collection.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv_limpios\collection.csv",index=False)
-df_production_countries.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv_limpios\countries.csv",index=False)
-df_production_companies.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv_limpios\companies.csv",index=False)
-df_crew.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv_limpios\crew.csv",index=False)
+# Ya se encuentran guardados en la carpeta "csv", si desea guardarlos en otra carpeta
+# Solo saque el "#" delante de cada una y cambie la ruta donde guardar.
+#data.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\data.csv",index=False)
+#df_belongs_to_collection.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\collection.csv",index=False)
+#df_production_countries.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\countries.csv",index=False)
+#df_production_companies.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\companies.csv",index=False)
+#df_crew.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\crew.csv",index=False)
+#df_cast.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\cast.csv",index=False)

@@ -1,25 +1,30 @@
 # Proyecto Individual 1
 ## Abril Lasso de la Vega
-**Este readme esta escrito desde el punto de vista del archivo de jupyter notebook, su paso a paso y orden.**<br>
-**En el código del archivo .py hay comentarios más simples y cambios de orden, la explicación sirve para ambos.**
+**Este readme esta escrito desde el punto de vista de los archivos de jupyter notebook, su paso a paso y orden.**<br>
+**En el código de los archivos .py hay comentarios más simples y cambios de orden, la explicación es la misma**
 
 - En el archivo ETL.py se encuentran todas las transformaciones que hice y luego guardé los .csv ya limpios, ordenados y de la forma que quería.
 
 - En el archivo API.py se tienen las funciones para la API, se traen los csv limpios, y se trabaja toda la parte de API allí.
 
-- Recuerde que para que el código le funcione correctamente, debe cambiar la ruta del archivo en el pd.read_csv, a la ruta en la que se encuentre este en su pc.<br>
+- Recuerde que para que el código ETL le funcione correctamente, debe cambiar la ruta del archivo en el pd.read_csv, a la ruta en la que se encuentre este en su pc (Luego para el resto de archivos los df creados son usando los csv limpios, que se encuentran en la carpeta "csv", por lo tanto no necesita cambiar nada).<br>
+
+- En el archivo ETL.ipynb además de encontrarse cómo fui avanzando y cada cosa que hice respecto al ETL, también se encuentran las funciones de la API (es lo mismo a verlas en API.py, pero hay algunos codigo ejemplo y prueba).<br>
 
 ### ETL
 Empecé por hacer las transformaciones pedidas y necesarias, comenzando con las más fáciles:<br>
+
 * Empiezo por los datos del archivo "movies_dataset.csv".<br>
     * Eliminé las columnas pedidas ["video","imdb_id","adult","original_title","poster_path" , "homepage"], innecesarias que no van a ser utilizadas.<br>
-    * Verifique los valores de budget y revenue para ver lo que me esperaba en el valor de la columna a crear "return". Al ver los valores de nada se ve como va a dominar el return 0, tanto por el lado de budget 0 (en donde decidí dejar return igual a 0)
+    * Verifique los valores de budget y revenue para ver lo que me esperaba en el valor de la columna a crear "return". Al ver los valores de cada columna se nota como va a dominar el return 0, tanto por el lado de budget 0 (donde se deja return igual a 0) como por el de revenue igual 0.
     * Antes de crear la columna me aseguré de que los valores que fueran nulos se reemplazaran por 0, como nos pidieron (solamente la columna revenue contaba con vacios).
     * Elimino los vacios (filas) de la columna "release_date".
     * Solo por observación use el código "data.isna().sum()", asi veía los vacios que quedan y en qué columnas.
     * Ahora sí, cree la columna return, primero verificando el tipo de valores de cada columna, y luego asegurandome de pasar los valores de la columna budget de string a float. La columna return la cree realizando un ciclo (en el cual tuve que hacer zip para poder renombrar a los valores de cada columna como i y j) en el que si budget es distinto de cero se hace la división y se agrega el valor a la lista que en principio está vacía, y si budget es cero el valor que se agrega es cero a la lista. Luego esta lista es la contenedora de los valores de return y lo último por hacer es crear la nueva columna con estos valores.
-    * Ahora paso a crear la siguiente columna pedida "release_year", para esto primero tuve que transformar la columna "release_date" a datetime y que en caso de que tire error (no es una fecha como tal o no esta en el formato correcto) me va a llenar con vacio. Luego cree la nueva columna de los años con `"data["release_year"]=data["release_date"].dt.year"` 
-    * Eliminé tres filas que eran completamente inusables, no solamente están llenas de vacios, sino que los pocos valores que tienen parecen estar intercambiados, y no sabría cómo sería el reordenamiento correcto. Justamente este desorden trajo mayores vacios, las fechas fueron imposibles de calcular. `data.drop(labels=[19730,29503,35587],axis=0,inplace=True)`.<br>
+    * Ahora paso a crear la siguiente columna pedida "release_year", para esto primero tuve que transformar la columna "release_date" a datetime y que en caso de que tire error (no es una fecha como tal o no esta en el formato correcto) me va a llenar con vacio. Luego cree la nueva columna de los años con <br>
+    `"data["release_year"]=data["release_date"].dt.year"` 
+    * Eliminé tres filas que eran completamente inusables, no solamente están llenas de vacios, sino que los pocos valores que tienen parecen estar intercambiados, y no sabría cómo sería el reordenamiento correcto. Justamente este desorden trajo mayores vacios, las fechas fueron imposibles de calcular.<br>
+    `data.drop(labels=[19730,29503,35587],axis=0,inplace=True)`.<br>
 
 **Terminé re acomodando las columnas del dataframe por simple gusto, el orden es a ojo y no cambia los valores ni los futuros resultados.**<br>
 * **El nombre "id_pelicula" aclara mejor el tipo de id, asi que reemplacé todos los id que hagan referencia a la pelicula por este mismo nombre(va a verse los cambios en el código).**<br>
@@ -34,11 +39,12 @@ def desanidar_cast(row):
     desanidado = pd.json_normalize(cast_data)
     desanidado['id'] = row['id']
     return desanidado
+ 
 ```
-Para esta función obtuve ayuda principal de chatgpt y luego para entenderla bien pedí que me expliqué cada parte. La función se aplica a cada fila del DataFrame original utilizando df.apply(desanidar_cast, axis=1). Se utiliza `ast.literal_eval(row["cast"])` para evaluar de forma segura la expresión literal de la columna "cast" y convertirla en una estructura de datos legible por Python, esto *permite tratar el contenido de la columna como una lista de diccionarios*. Luego, se utiliza `pd.json_normalize` para desanidar los datos y convertirlos en un DataFrame, esto *crea nuevas columnas para cada clave en los diccionarios de la lista*. Se agrega una columna adicional llamada "id" al DataFrame desanidado, que contiene el valor de la columna "id" de la fila original, asegurando que *cada fila desanidada tenga su correspondiente "id"*. **La función se ejecuta una vez por cada fila y devuelve un DataFrame desanidando esa fila específica, agregando en cada uno la columna id con el id correspondiente a la fila que se desanida del dataframe original**.<br>
-* Esta función se reutilizo para la columna crew, donde se le cambió el nombre y también la columna a desanidar dentro de la función.<br>
+Para esta función obtuve ayuda principal de chatgpt y luego para entenderla bien pedí que me expliqué cada parte. La función se aplica a cada fila del DataFrame original utilizando df.apply(desanidar_cast, axis=1). Se utiliza `ast.literal_eval(row["cast"])` para evaluar de forma segura la expresión literal de la columna "cast" y convertirla en una estructura de datos legible por Python, esto *permite tratar el contenido de la columna como una lista de diccionarios*. Luego, se utiliza `pd.json_normalize` para desanidar los datos y convertirlos en un DataFrame, esto *crea nuevas columnas para cada clave en los diccionarios de la lista*. Se agrega una columna adicional llamada "id" al DataFrame desanidado, que contiene el valor de la columna "id" de la fila original, asegurando que *cada fila desanidada tenga su correspondiente "id"*. **La función se ejecuta una vez por cada fila y devuelve un DataFrame desanidando esa fila específica, agregando en cada uno la columna "id_pelicula" con el id correspondiente a la fila que se desanida del dataframe original**.<br>
+* *Esta función se reutilizo para la columna crew (ver archivo ETL.py o ETL.ipynb)*.<br>
 * Guardo el desanidado de la columna cast en la variable "cast" y el desanidado de la columna crew en la variable "crew".
-* Hay que concatenar los dataframe que ahora se encuentran en una serie compuesta por los dataframes como datos, para ello primero hay que pasar la serie a lista y luego aplicar pd.concat en la lista, ignorando los indices (reiniciando los indices del dataframe final). Entonces ahora me quedo con los dos dataframe, del cual solo me es útil crew: 
+* Hay que concatenar los dataframe que ahora se encuentran en una serie compuesta por los dataframes de cada fila como datos, para ello primero hay que pasar la serie a lista y luego aplicar pd.concat en la lista, ignorando los indices (reiniciando los indices del dataframe final). Entonces ahora me quedo con los dos dataframe, del cual solo me es útil crew para las primeras 6 funciones: 
 ```python
 crew=list(crew)
 df_crew=pd.concat(crew, ignore_index=True)
@@ -57,3 +63,11 @@ También hay funciones en las que agregue más columnas de los datos originales,
 - La forma esencial de funcionamiento de estas funciones es agarrar los dataframe y a partir de estos crear sub dataframes dentro de la función en los que se filtró el df original. Luego de ello ya aplicado el filtro (ej: un df que contenga solo las peliculas que salieron en el año *x* del df "data" `data[data['release_year']==int(x)]`) generalmente con esto es suficiente y saco los calculos necesarios a una nueva variable, o los datos de las columnas que quiero en otra variable (pasandolos a listas).
 - Para el caso de `get_director()` tuve que comparar las columnas del df_crew para que tuvieran el nombre del director y el trabajo "director"(ya que sino, se estaria poniendo un miembro que no fuera director, o si trabajo en otras peliculas con otros puestos, se estarían contando como peliculas que el dirigio, aún si asi no fue) guardandolo en una nueva variable, siendo un nuevo df -vamos a nombrarlo 'a' para la explicación-. Luego con los valores de la columna "id_pelicula" que se encuentran en el df "a" hago una lista, con esta lista guardo en otro nuevo dataframe -"b"- aquellas filas que cumplan en el df "data" que su valor de la columna "id_pelicula" se encuentra en la lista. Y para finalizar simplemente se utilizan las columnas de este último df "b" para devolver las respuestas como un diccionario que contiene listas en sus claves (excepto en el nombre del director).
 
+## EDA
+- El EDA se realizó en el archivo "EDA.ipynb", no hice un archivo .py porque lo consideré innecesario y en el jupyter notebook van a tener vista previa de todos los graficos y demas. De ser necesario también pueden correr el código sin problemas , no hay necesidad de cambiar ninguna ruta (los csv llamados son los pasados por etl que se encuentran guardados en la carpeta "csv").<br>
+- Para el EDA se utilizaron todos los df aún si no eran utilizados para las primeras funciones hechas de la API (hay que analizar cada parametro y ver si para el sistema de recomendación es importante).
+
+Lo primero que se me ocurrio fue juntar todos los df en uno solo, utilizando merge teniendo en cuenta la columna "id_pelicula" (que ya todos los df tienen con el mismo nombre). Pero para hacerlo habia que verificar que ciertos nombres de columnas no se pisen y que fueran todas necesarias.<br>
+* Varios df tenian una columna de nombre "id" asi que lo primero que hice fue renombrar este a "nombredf_id" siendo "nombredf" no solamente parte de su nombre, sino que también la caracteristica más importante del df. Luego de este cambio se elimina la columna "id", ya innecesaria.
+* Para el caso de "df_cast" nos encontramos con "id" y "cast_id", como si no hubiera que hacer ningun cambio y solo tirar la columna id, pero analizando justamente el id representante que yo necesitaba se encontraba en la columna "id" y el que se encuentra en la columna "cast_id" en realidad es un id propio de cada pelicula, por lo que termina reiniciando y no perteneciendo a una persona en especifico, caso contrario con id que si pertenecia a solo una persona. Se cambio el "cast_id" y se eliminó la columna "id".
+* Para el caso de "df_belongs_collection"

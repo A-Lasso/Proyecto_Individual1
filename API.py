@@ -6,12 +6,12 @@ from fastapi import FastAPI
 
 # Usamos: data,df_belongs_to_collection,df_production_countries,df_production_companies,df_crew
 
-data=pd.read_csv("csv_limpios/data.csv")
-df_belongs_to_collection=pd.read_csv("csv_limpios/collection.csv")
-df_production_countries=pd.read_csv("csv_limpios/countries.csv")
-df_production_companies=pd.read_csv("csv_limpios/companies.csv")
-df_crew=pd.read_csv("csv_limpios/crew.csv")
-df_genres=pd.read_csv("csv_limpios/genres.csv")
+data=pd.read_csv("csv/data.csv")
+df_belongs_to_collection=pd.read_csv("csv/collection.csv")
+df_production_countries=pd.read_csv("csv/countries.csv")
+df_production_companies=pd.read_csv("csv/companies.csv")
+df_crew=pd.read_csv("csv/crew.csv")
+df_genres=pd.read_csv("csv/genres.csv")
 
 # instanciamos FastAPI
 

@@ -35,10 +35,13 @@ df_cast2.drop(columns=['id','name','gender','order','character'],inplace=True)
 df_belongs_to_collection2['collection_id']=df_belongs_to_collection2['id']
 df_belongs_to_collection2.drop(columns=['name','id','revenue','budget'],inplace=True)
 
-df_todo=pd.merge(data2,df_genres2,on='id_pelicula')
-df_todo=pd.merge(df_todo,df_crew2,on='id_pelicula')
-df_todo=pd.merge(df_todo,df_cast2,on='id_pelicula')
-df_todo=pd.merge(df_todo,df_belongs_to_collection2,on='id_pelicula')
+
+df_todo=pd.merge(data2,df_genres2,on='id_pelicula',how='left')
+df_todo=pd.merge(df_todo,df_crew2,on='id_pelicula',how='left')
+df_todo=pd.merge(df_todo,df_cast2,on='id_pelicula',how='left')
+df_todo=pd.merge(df_todo,df_belongs_to_collection2,on='id_pelicula',how='left')
+
+df_todo.loc[df_todo["collection_id"].isna(),"collection_id"]=0
 
 # En EDA.ipynb ya analizamos los mejores hiperparametros con Random Search.
 # Preferi un modelo de K vecinos ya que se basa en las semejanzas de los datos

@@ -21,7 +21,7 @@ df_cast2=df_cast.copy()
 df_genres2=df_genres.copy()
 df_belongs_to_collection2=df_belongs_to_collection.copy()
 
-data2.drop(columns=['title','overview','tagline','original_language','release_date','status'],inplace=True)
+data2.drop(columns=['title','overview','runtime','tagline','original_language','release_date','status'],inplace=True)
 
 df_genres2['genre_id']=df_genres2['id']
 df_genres2.drop(columns=['id','name'],inplace=True)
@@ -29,15 +29,21 @@ df_genres2.drop(columns=['id','name'],inplace=True)
 df_crew2['crew_id']=df_crew2['id']
 df_crew2.drop(columns=['gender','name','department','job','id'],inplace=True)
 
-df_cast['cast_id']=df_cast['id']
-df_cast.drop(columns=['id','name','gender','order','character'],inplace=True)
+df_cast2['cast_id']=df_cast2['id']
+df_cast2.drop(columns=['id','name','gender','order','character'],inplace=True)
 
-
+df_belongs_to_collection2['collection_id']=df_belongs_to_collection2['id']
+df_belongs_to_collection2.drop(columns=['name','id','revenue','budget'],inplace=True)
 
 df_todo=pd.merge(data2,df_genres2,on='id_pelicula')
 df_todo=pd.merge(df_todo,df_crew2,on='id_pelicula')
 df_todo=pd.merge(df_todo,df_cast2,on='id_pelicula')
 df_todo=pd.merge(df_todo,df_belongs_to_collection2,on='id_pelicula')
+
+# En EDA.ipynb ya analizamos los mejores hiperparametros con Random Search.
+# Preferi un modelo de K vecinos ya que se basa en las semejanzas de los datos
+# Para predecir.
+
 
 
 

@@ -16,10 +16,6 @@ df_genres=pd.read_csv("csv/genres.csv")
 df_cast=pd.read_csv("csv/cast.csv")
 df_todo=pd.read_csv("csv/df_todo.csv")
 
-# En EDA.ipynb ya analizamos los mejores hiperparametros con Random Search.
-# Preferi un modelo de K vecinos ya que se basa en las semejanzas de los datos
-# Para predecir.
-
 
 # instanciamos FastAPI
 

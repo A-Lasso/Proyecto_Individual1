@@ -10,44 +10,14 @@ data=pd.read_csv("csv/data.csv")
 df_belongs_to_collection=pd.read_csv("csv/collection.csv")
 df_production_countries=pd.read_csv("csv/countries.csv")
 df_production_companies=pd.read_csv("csv/companies.csv")
-df_crew=pd.read_csv("csv/crew.csv")
+df_director=pd.read_csv("csv/director.csv")
 df_genres=pd.read_csv("csv/genres.csv")
 df_cast=pd.read_csv("csv/cast.csv")
-
-# Preparo el df para ML
-data2=data.copy()
-df_crew2=df_crew.copy()
-df_cast2=df_cast.copy()
-df_genres2=df_genres.copy()
-df_belongs_to_collection2=df_belongs_to_collection.copy()
-
-data2.drop(columns=['title','overview','runtime','tagline','original_language','release_date','status'],inplace=True)
-
-df_genres2['genre_id']=df_genres2['id']
-df_genres2.drop(columns=['id','name'],inplace=True)
-
-df_crew2['crew_id']=df_crew2['id']
-df_crew2.drop(columns=['gender','name','department','job','id'],inplace=True)
-
-df_cast2['cast_id']=df_cast2['id']
-df_cast2.drop(columns=['id','name','gender','order','character'],inplace=True)
-
-df_belongs_to_collection2['collection_id']=df_belongs_to_collection2['id']
-df_belongs_to_collection2.drop(columns=['name','id','revenue','budget'],inplace=True)
-
-
-df_todo=pd.merge(data2,df_genres2,on='id_pelicula',how='left')
-df_todo=pd.merge(df_todo,df_crew2,on='id_pelicula',how='left')
-df_todo=pd.merge(df_todo,df_cast2,on='id_pelicula',how='left')
-df_todo=pd.merge(df_todo,df_belongs_to_collection2,on='id_pelicula',how='left')
-
-df_todo.loc[df_todo["collection_id"].isna(),"collection_id"]=0
+df_todo=pd.read_csv("csv/df_todo.csv")
 
 # En EDA.ipynb ya analizamos los mejores hiperparametros con Random Search.
 # Preferi un modelo de K vecinos ya que se basa en las semejanzas de los datos
 # Para predecir.
-
-
 
 
 # instanciamos FastAPI
@@ -162,7 +132,7 @@ def get_director(nombre_director:str):
     '''
 
     nombre_director=nombre_director.strip()
-    df=df_crew[df_crew["job"]=='Director'][df_crew['name']==nombre_director]
+    df=df_director[df_director['name']==nombre_director]
     if df['name'].count().sum()==0:
         return "No se encuentra el director {} o no es un director.".format(nombre_director)
     id_pel=list(df['id_pelicula'].values)
@@ -193,5 +163,8 @@ def recomendacion(titulo:str):
     '''Ingresas un nombre de pelicula y te devuelve una recomendación de 5 peliculas en una lista
        Esta recomendación esta ordenada de la mejor a la peor.
     '''
+    id_pel=data['id_pelicula'][data['title']==titulo]
+    df=df_todo[df_todo['id_pelicula']==id_pel].drop(columns='id_pelicula')
 
-    return {'lista recomendada': titulo}
+    lista=[]
+    return {'lista recomendada': lista}

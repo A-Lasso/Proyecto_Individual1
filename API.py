@@ -188,7 +188,7 @@ def recomendacion(titulo:str):
     
     x=len(genre)-1
     filtro_1 = primer_filtro.groupby('id_pelicula')['id_pelicula'].transform('count') > x
-    primer_filtro_1 = primer_filtro[filtro_1].copy()
+    primer_filtro = primer_filtro[filtro_1].copy()
 
     primer_filtro=primer_filtro.sort_values(by='vote_average',ascending=False).copy()
     primer_filtro.drop_duplicates(subset=['id_pelicula','release_year'],inplace=True)

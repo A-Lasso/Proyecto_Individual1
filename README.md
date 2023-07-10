@@ -72,11 +72,11 @@ Lo primero que se me ocurrio fue juntar todos los df en uno solo, utilizando mer
 * Para el caso de "df_cast" nos encontramos con "id" y "cast_id", como si no hubiera que hacer ningun cambio y solo tirar la columna id, pero analizando justamente el id representante que yo necesitaba se encontraba en la columna "id", y el que se encuentra en la columna "cast_id" en realidad es un id propio de cada pelicula, por lo que termina reiniciando y no perteneciendo a una persona en especifico, caso contrario con id que si pertenecia a solo una persona. Se cambio el "cast_id" y se eliminó la columna "id". **Al final no se termino agregando este dataframe por analisis posteriores**
 * Conforme se fue avanzando y analizando en el merge fui quitando dataframes que contenian los datos innecesarios, que generaban más vacios y no tenian correlaciones ni utilidad para futuras predicciones.
 <p align="center">
-<img src=Primer_correlación.png height="600">
+<img src=png\Primer_correlación.png height="600">
 </p>
 Si bien parece que hay una conexión entre cast_id y las peliculas, esta termina siendo insignificante a comparación de no tener esta columna, con ella se llena de vacios y llegamos a 600k filas, mientras que sin ellas quedamos con 100k (mucho más optimizado, comodo y útil).<br>
 <p align="center">
-<img src=Segunda_correlación.png height="600">
+<img src=png\Segunda_correlación.png height="600">
 </p>
 <br>
 La única razón que no saco el genero es que estas correlaciones se basan completamente en parecidos de la peliculas, por lo tanto es completamente logico que no se aprecie en sentido de los gustos de las personas, y creo que el genero es una de las cosas más importantes a la hora de recomendar.<br>
@@ -88,19 +88,36 @@ Siguiendo:<br>
 
 Decidi acortar Las filas del dataframe "df_todo" al poner un minimo a cumplir en las columnas 'vote_average','vote_count' y 'popularity'. 
 * Antes se analizo cada una con un histograma para ver la densidad de los valores en cada columna, desde ahi decidir mas o menos dónde debería estar el filtro. <br>
-* Luego cree un sub dataframe para cada caso, en que yo aplicaba el filtro que creia necesario al revés, para que este dataframe creado se quede con las peliculas que se quitarian. Luego analicé cuántas peliculas me sacadaba y si realmente era lo correcto poner ese filtro. Resulto que por la columna "popularity" no me conviene filtrar (aun asi decidi hacerlo si tenian una popularidad menor a 1)
+* Luego cree un sub dataframe para cada caso, en que yo aplicaba el filtro que creia necesario al revés, para que este dataframe creado se quede con las peliculas que se quitarian. Luego analicé cuántas peliculas me sacadaba y si realmente era lo correcto poner ese filtro, si era mucho fui viendo cuántas peliculas me quedaban si iba aplicando otro filtro a este sub dataframe, y con esto analice qué valores serian los mejores y decidí el que me convencia. Resulto que por la columna "popularity" no me conviene filtrar, aun asi decidi hacerlo si tenian una popularidad menor a 1 ya que no quitaba tantas peliculas, y si esta la popularidad para algo es. (Se entiende que si una pelicula no es popular por más buena que sea para la gente que la vió es muy probable que tenga un aspecto negativo, la razón por la que no se consume tanto)
 
 `Antes de los cambios`<br>
 <p align="center">
-<img src=dist_cant_votos1.png height="400">
+<img src=png\dist_cant_votos1.png height="400">
 </p><br>
 
 <p align="center">
-<img src=dist_popularidad1.png height="400">
+<img src=png\dist_popularidad1.png height="400">
 </p><br>
 
 <p align="center">
-<img src=dist_average1.png height="400">
+<img src=png\dist_average1.png height="400">
 </p><br>
 
 `Después de los cambios`<br>
+
+<p align="center">
+<img src=png\dist_cant_votos2.png height="400">
+</p><br>
+
+<p align="center">
+<img src=png\dist_popularidad2.png height="400">
+</p><br>
+
+<p align="center">
+<img src=png\dist_average2.png height="400">
+</p><br>
+
+`Nube de palabras de los titulos`<br>
+<p align="center">
+<img src=png\Nube_Palabras.png >
+</p><br>

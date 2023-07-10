@@ -164,7 +164,13 @@ def recomendacion(titulo:str):
     '''Ingresas un nombre de pelicula y te devuelve una recomendación de 5 peliculas en una lista
        Esta recomendación esta ordenada de la mejor a la peor.
     '''
-    id_pel=data['id_pelicula'][data['title']==titulo]
+    df_director2=df_director.copy()
+    df_director2.drop_duplicates(subset='id',inplace=True)
+    df_director2['director_id']=df_director['id']
+    df_director2['director_name']=df_director2['name']
+    df_director2.drop(columns=['id','id_pelicula','name','department','job','gender'],inplace=True)
+
+    id_pel=list(data['id_pelicula'][data['title']==titulo])
     df=df_todo[df_todo['id_pelicula'].isin(id_pel)].drop(columns='id_pelicula').copy()
     df.drop_duplicates(inplace=True)
 
@@ -182,10 +188,20 @@ def recomendacion(titulo:str):
     director=list(df['director_id'].unique())
     segundo_filtro=primer_filtro[primer_filtro['director_id'].isin(director)]
     segundo_filtro=segundo_filtro.sort_values(by='vote_average',ascending=False).copy()
+    primeros=primer_filtro.head(5)
 
     if segundo_filtro['id_pelicula'].count()!=0:
-        asa='a'
+        primeros.append(segundo_filtro.head(4),ignore_index=True)
+        primeros=primeros.sort_values(by='vote_average',ascending=False).copy().head(5)
+        primeros=pd.merge(primeros,df_director2,on='director_id',how='left')
+        Nombre=list(primeros['title'])
+        Anio=list(primeros['release_year'])
+        Director=list(primeros['director_name'])
+
     else:
-        id=list(primer_filtro['id_pelicula'].head(5))
-        Nombre=data['title']
-    return {'Nombre': Nombre,'Anio':Anio,'Director':Director}
+        primeros=pd.merge(primeros,df_director2,on='director_id',how='left')
+        Nombre=list(primeros['title'])
+        Anio=list(primeros['release_year'])
+        Director=list(primeros['director_name'])
+
+    return {'Nombre': Nombre,'Anio estreno':Anio,'Director':Director}

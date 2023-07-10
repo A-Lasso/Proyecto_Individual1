@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 from fastapi import FastAPI
+from sklearn.metrics.pairwise import euclidean_distances
 
 
 # Usamos: data,df_belongs_to_collection,df_production_countries,df_production_companies,df_crew
@@ -164,7 +165,27 @@ def recomendacion(titulo:str):
        Esta recomendación esta ordenada de la mejor a la peor.
     '''
     id_pel=data['id_pelicula'][data['title']==titulo]
-    df=df_todo[df_todo['id_pelicula']==id_pel].drop(columns='id_pelicula')
+    df=df_todo[df_todo['id_pelicula'].isin(id_pel)].drop(columns='id_pelicula').copy()
+    df.drop_duplicates(inplace=True)
 
-    lista=[]
-    return {'lista recomendada': lista}
+    # Hago un primer filtro para quedarme con las filas que tengan alguno
+    # de los generos de la pelicula ingresada.
+    genre=list(df['genre_id'].unique())
+    primer_filtro=df_todo[df_todo['genre_id'].isin(genre)]
+
+    primer_filtro=primer_filtro[~primer_filtro['id_pelicula'].isin(id_pel)]
+    primer_filtro=primer_filtro.sort_values(by='vote_average',ascending=False).copy()
+    primer_filtro.drop_duplicates(subset=['id_pelicula','release_year'],inplace=True)
+
+    # Segundo filtro para devolver la mejor pelicula de alguno de los directores
+    # (si hay alguna pelicula del mismo genero).
+    director=list(df['director_id'].unique())
+    segundo_filtro=primer_filtro[primer_filtro['director_id'].isin(director)]
+    segundo_filtro=segundo_filtro.sort_values(by='vote_average',ascending=False).copy()
+
+    if segundo_filtro['id_pelicula'].count()!=0:
+        asa='a'
+    else:
+        id=list(primer_filtro['id_pelicula'].head(5))
+        Nombre=data['title']
+    return {'Nombre': Nombre,'Anio':Anio,'Director':Director}

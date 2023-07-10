@@ -161,7 +161,7 @@ def get_director(nombre_director:str):
 # ML
 @app.get('/recomendacion/{titulo}')
 def recomendacion(titulo:str):
-    '''Ingresas un nombre de pelicula y te devuelve una recomendación de 5 peliculas en una lista
+    '''Ingresas un nombre de pelicula y te devuelve una recomendación de 5 peliculas en un diccionario
        Esta recomendación esta ordenada de la mejor a la peor.
     '''
     df_director2=df_director.copy()
@@ -177,9 +177,19 @@ def recomendacion(titulo:str):
     # Hago un primer filtro para quedarme con las filas que tengan alguno
     # de los generos de la pelicula ingresada.
     genre=list(df['genre_id'].unique())
-    primer_filtro=df_todo[df_todo['genre_id'].isin(genre)]
 
+    # En este primer filtro me fijo que las peliculas pertenezcan a los mismos generos
+    primer_filtro=df_todo[df_todo['genre_id'].isin(genre)]
     primer_filtro=primer_filtro[~primer_filtro['id_pelicula'].isin(id_pel)]
+
+    # Me deshago de las peliculas que tengan menos coincidencia de generos 
+    # De forma tal que si no se repiten cantidad de generos menos 1 nos deshacemos de ellas
+    # Esto significa que como minimo deben tener un genero menos que el de la pelicula.
+    
+    x=len(genre)-1
+    filtro_1 = primer_filtro.groupby('id_pelicula')['id_pelicula'].transform('count') > x
+    primer_filtro_1 = primer_filtro[filtro_1].copy()
+
     primer_filtro=primer_filtro.sort_values(by='vote_average',ascending=False).copy()
     primer_filtro.drop_duplicates(subset=['id_pelicula','release_year'],inplace=True)
 
@@ -203,5 +213,8 @@ def recomendacion(titulo:str):
         Nombre=list(primeros['title'])
         Anio=list(primeros['release_year'])
         Director=list(primeros['director_name'])
+
+    if primeros['id_pelicula'].count()==0:
+        return "La pelicula {} no se encuentra en la base de datos para recomendar a partir de ella".format(titulo)
 
     return {'Nombre': Nombre,'Anio estreno':Anio,'Director':Director}

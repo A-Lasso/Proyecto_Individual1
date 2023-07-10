@@ -69,5 +69,38 @@ También hay funciones en las que agregue más columnas de los datos originales,
 
 Lo primero que se me ocurrio fue juntar todos los df en uno solo, utilizando merge teniendo en cuenta la columna "id_pelicula" (que ya todos los df tienen con el mismo nombre). Pero para hacerlo habia que verificar que ciertos nombres de columnas no se pisen y que fueran todas necesarias.<br>
 * Varios df tenian una columna de nombre "id" asi que lo primero que hice fue renombrar este a "nombredf_id" siendo "nombredf" no solamente parte de su nombre, sino que también la caracteristica más importante del df. Luego de este cambio se elimina la columna "id", ya innecesaria.
-* Para el caso de "df_cast" nos encontramos con "id" y "cast_id", como si no hubiera que hacer ningun cambio y solo tirar la columna id, pero analizando justamente el id representante que yo necesitaba se encontraba en la columna "id" y el que se encuentra en la columna "cast_id" en realidad es un id propio de cada pelicula, por lo que termina reiniciando y no perteneciendo a una persona en especifico, caso contrario con id que si pertenecia a solo una persona. Se cambio el "cast_id" y se eliminó la columna "id".
-* Para el caso de "df_belongs_collection"
+* Para el caso de "df_cast" nos encontramos con "id" y "cast_id", como si no hubiera que hacer ningun cambio y solo tirar la columna id, pero analizando justamente el id representante que yo necesitaba se encontraba en la columna "id", y el que se encuentra en la columna "cast_id" en realidad es un id propio de cada pelicula, por lo que termina reiniciando y no perteneciendo a una persona en especifico, caso contrario con id que si pertenecia a solo una persona. Se cambio el "cast_id" y se eliminó la columna "id". **Al final no se termino agregando este dataframe por analisis posteriores**
+* Conforme se fue avanzando y analizando en el merge fui quitando dataframes que contenian los datos innecesarios, que generaban más vacios y no tenian correlaciones ni utilidad para futuras predicciones.
+<p align="center">
+<img src=Primer_correlación.png height="600">
+</p>
+Si bien parece que hay una conexión entre cast_id y las peliculas, esta termina siendo insignificante a comparación de no tener esta columna, con ella se llena de vacios y llegamos a 600k filas, mientras que sin ellas quedamos con 100k (mucho más optimizado, comodo y útil).<br>
+<p align="center">
+<img src=Segunda_correlación.png height="600">
+</p>
+<br>
+La única razón que no saco el genero es que estas correlaciones se basan completamente en parecidos de la peliculas, por lo tanto es completamente logico que no se aprecie en sentido de los gustos de las personas, y creo que el genero es una de las cosas más importantes a la hora de recomendar.<br>
+Además por pelicula tampoco se aprecia su cantidad de generos en estos analisis, siendo que por cada genero que tengan sus filas se multiplicaron cambiando el id.(más adelante se analizan peliculas por genero)<br>
+
+* Entonces en cuanto a correlaciones el genero no tiene ya que no debería existir una relación lógica entre los generos de distintas peliculas. Pero no podemos quitarlos ya que para predecir/recomendar peliculas parecidas a una ingresada el genero es una de las primeras cosas a la que prestar atención.
+
+Siguiendo:<br>
+
+Decidi acortar Las filas del dataframe "df_todo" al poner un minimo a cumplir en las columnas 'vote_average','vote_count' y 'popularity'. 
+* Antes se analizo cada una con un histograma para ver la densidad de los valores en cada columna, desde ahi decidir mas o menos dónde debería estar el filtro. <br>
+* Luego cree un sub dataframe para cada caso, en que yo aplicaba el filtro que creia necesario al revés, para que este dataframe creado se quede con las peliculas que se quitarian. Luego analicé cuántas peliculas me sacadaba y si realmente era lo correcto poner ese filtro. Resulto que por la columna "popularity" no me conviene filtrar (aun asi decidi hacerlo si tenian una popularidad menor a 1)
+
+`Antes de los cambios`<br>
+<p align="center">
+<img src=dist_cant_votos1.png height="400">
+</p><br>
+
+<p align="center">
+<img src=dist_popularidad1.png height="400">
+</p><br>
+
+<p align="center">
+<img src=dist_average1.png height="400">
+</p><br>
+
+`Después de los cambios`<br>

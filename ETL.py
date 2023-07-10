@@ -104,6 +104,7 @@ df_cast=pd.concat(cast, ignore_index=True)
 
 # Elimino las columnas que considero innecesarias
 df_crew.drop(columns=["credit_id","profile_path"],inplace=True)
+df_cast.drop(columns=["credit_id","profile_path"],inplace=True)
 
 # traigo la función anteriormente usada
 # Cambio en cada una la columna a desanidar
@@ -209,5 +210,5 @@ data.drop(columns=["belongs_to_collection","genres","spoken_languages","producti
 #df_belongs_to_collection.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\collection.csv",index=False)
 #df_production_countries.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\countries.csv",index=False)
 #df_production_companies.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\companies.csv",index=False)
-#df_crew.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\crew.csv",index=False)
+#df_crew.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\director.csv",index=False)
 #df_cast.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\cast.csv",index=False)

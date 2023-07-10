@@ -42,7 +42,7 @@ def peliculas_idioma(idioma):
     idioma=idioma.strip()
     count1= str(data["original_language"][data["original_language"]==idioma].count())
 
-    return "{} cantidad de películas fueron estrenadas en '{}' ".format(count1,idioma)
+    return {"idioma":idioma,"cantidad":count1}
 
 @app.get("/peliculas/duracion/{Pelicula}")
 def peliculas_duracion(Pelicula):
@@ -84,11 +84,9 @@ def franquicia(Franquicia:str):
     rev=float(df["revenue"].sum())
     if df['name'].count().sum()==0:
         return "No se encuentra la franquicia {}".format(Franquicia)
-    else:
-        if cant!=0:
-            prom=str(rev/cant)
-        else:
-            prom='0'
+    
+    prom=str(rev/cant)
+    
     return "La franquicia "+ Franquicia + " posee "+ str(cant) +" peliculas, una ganancia total de "+ str(rev) +" y una ganancia promedio de "+ prom +""
 
 @app.get("/peliculas/pais/{Pais}")
@@ -197,9 +195,10 @@ def recomendacion(titulo:str):
     primeros=primer_filtro.head(5)
 
     if segundo_filtro['id_pelicula'].count()!=0:
-        primeros.append(segundo_filtro.head(4),ignore_index=True)
+        primeros.append(segundo_filtro.head(1),ignore_index=True)
         primeros=primeros.sort_values(by='vote_average',ascending=False).copy().head(5)
         primeros=pd.merge(primeros,df_director2,on='director_id',how='left')
+        primeros.drop_duplicates(inplace=True)
         Nombre=list(primeros['title'])
         Anio=list(primeros['release_year'])
         Director=list(primeros['director_name'])

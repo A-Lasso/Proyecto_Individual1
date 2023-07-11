@@ -68,7 +68,7 @@ def peliculas_duracion(Pelicula):
     else:
         return "No hay pelicula con ese titulo"
        
-    return {'Pelicula ': Pelicula,'Duracion': list(dur),'Anio': list(Anio)}
+    return {'Pelicula ':Pelicula,'Duracion':list(dur),'Anio':list(Anio)}
 
 @app.get("/franquicia/{Franquicia}")
 def franquicia(Franquicia:str):

@@ -59,8 +59,8 @@ def peliculas_duracion(Pelicula):
     # Cambio los datos del año a int asi se ve mejor
     df["release_year"]=pd.to_numeric(df["release_year"],downcast="integer")
     if cant>1:
-        dur=list(df["runtime"][df["title"]==Pelicula].values)
-        Anio=list(int(df["release_year"][df["title"]==Pelicula].values))
+        dur=df["runtime"][df["title"]==Pelicula].values
+        Anio=df["release_year"][df["title"]==Pelicula].values
 
     elif cant==1:
         dur=str(df["runtime"][df["title"]==Pelicula].values[0])
@@ -68,7 +68,7 @@ def peliculas_duracion(Pelicula):
     else:
         return "No hay pelicula con ese titulo"
        
-    return {'Pelicula ':Pelicula,'Duracion': dur,'Anio': Anio}
+    return {'Pelicula ': Pelicula,'Duracion': list(dur),'Anio': list(Anio)}
 
 @app.get("/franquicia/{Franquicia}")
 def franquicia(Franquicia:str):

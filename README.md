@@ -192,15 +192,13 @@ def recomendacion(titulo:str):
     primeros=primer_filtro.head(5)
 
     if segundo_filtro['id_pelicula'].count()!=0:
-        primeros.append(segundo_filtro.head(1),ignore_index=True)
+        
+        primeros=primeros.append(segundo_filtro.head(1),ignore_index=True)
         primeros=pd.merge(primeros,df_director2,on='director_id',how='left')
         primeros.drop_duplicates(inplace=True)
 
         if primeros['title'].count()==6:
             primeros.drop(index=4,inplace=True)
-            primeros=primeros.sort_values(by='vote_average',ascending=False,ignore_index=True).copy().head(5)
-        else:
-            primeros=primeros.sort_values(by='vote_average',ascending=False,ignore_index=True).copy().head(5)
 
         Nombre=list(primeros['title'])
         Anio=list(primeros['release_year'])

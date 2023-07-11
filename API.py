@@ -59,8 +59,8 @@ def peliculas_duracion(Pelicula):
     # Cambio los datos del año a int asi se ve mejor
     df["release_year"]=pd.to_numeric(df["release_year"],downcast="integer")
     if cant>1:
-        dur=str(list(df["runtime"][df["title"]==Pelicula].values))
-        Anio=str(list(df["release_year"][df["title"]==Pelicula].values))
+        dur=list(df["runtime"][df["title"]==Pelicula].values)
+        Anio=list(df["release_year"][df["title"]==Pelicula].values)
 
     elif cant==1:
         dur=str(df["runtime"][df["title"]==Pelicula].values[0])
@@ -82,7 +82,7 @@ def franquicia(Franquicia:str):
     # Me aseguro que esten en mismo tipo de dato.
     cant=float(df["name"].count())
     rev=float(df["revenue"].sum())
-    if df['name'].count().sum()==0:
+    if int(df['name'].count().sum())==0:
         return "No se encuentra la franquicia {}".format(Franquicia)
     
     prom=str(rev/cant)
@@ -110,7 +110,7 @@ def productoras_exitosas(Productora:str):
     '''
     Productora=Productora.strip()
     df=df_production_companies[df_production_companies['name']==Productora]
-    if df['name'].count()==0:
+    if int(df['name'].count())==0:
         return "No se encuentran datos de esta productora."
 
     suma=df['revenue'].sum()

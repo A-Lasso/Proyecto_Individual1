@@ -159,8 +159,7 @@ def recomendacion(titulo:str):
        Esta recomendación esta ordenada de la mejor a la peor.
     '''
     df_director2=df_director.copy()
-    df_director2.drop_duplicates(subset='id',inplace=True)
-    df_director2['director_id']=df_director['id']
+    df_director2['director_id']=df_director2['id']
     df_director2['director_name']=df_director2['name']
     df_director2.drop(columns=['id','name','department','job','gender'],inplace=True)
 

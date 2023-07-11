@@ -59,8 +59,8 @@ def peliculas_duracion(Pelicula):
     # Cambio los datos del año a int asi se ve mejor
     df["release_year"]=pd.to_numeric(df["release_year"],downcast="integer")
     if cant>1:
-        dur=list(df["runtime"][df["title"]==Pelicula].values)
-        Anio=list(df["release_year"][df["title"]==Pelicula].values)
+        dur=str(list(df["runtime"][df["title"]==Pelicula].values))
+        Anio=str(list(df["release_year"][df["title"]==Pelicula].values))
 
     elif cant==1:
         dur=str(df["runtime"][df["title"]==Pelicula].values[0])
@@ -97,7 +97,7 @@ def peliculas_pais(Pais:str):
     - Si no le sale, verifique que esta escribiendo bien el país.
     '''
     Pais=Pais.strip()
-    cant = df_production_countries["name"][df_production_countries["name"]==Pais].count()
+    cant = int(df_production_countries["name"][df_production_countries["name"]==Pais].count())
     if cant==0:
         return "Este país no ha realizado peliculas o se encuentra mal escrito."
     

@@ -7,9 +7,11 @@
 
 - En el archivo API.py se tienen las funciones para la API, se traen los csv limpios, y se trabaja toda la parte de API allí.
 
-- Recuerde que para que el código ETL le funcione correctamente, debe cambiar la ruta del archivo en el pd.read_csv, a la ruta en la que se encuentre este en su pc (Luego para el resto de archivos los df creados son usando los csv limpios, que se encuentran en la carpeta "csv", por lo tanto no necesita cambiar nada).<br>
+- Recuerde que para que el código ETL le funcione correctamente, debe cambiar la ruta del archivo en el pd.read_csv, a la ruta en la que se encuentre este en su pc (Luego para el resto de archivos son usados los csv limpios, que se encuentran en la carpeta "csv", por lo tanto no necesita cambiar nada).<br>
 
 - En el archivo ETL.ipynb además de encontrarse cómo fui avanzando y cada cosa que hice respecto al ETL, también se encuentran las funciones de la API (es lo mismo a verlas en API.py, pero hay algunos codigo ejemplo y prueba).<br>
+
+- Todo el EDA se encuentra en el archivo EDA.ipynb, también se encuentra allí el avance respecto a la función de recomendación. Por el EDA se genero un dataframe distinto para la recomendación, asi que va a ver otro etl dentro del archivo EDA (utilizando ya los csv tratados anteriormente).
 
 ### ETL
 Empecé por hacer las transformaciones pedidas y necesarias, comenzando con las más fáciles:<br>
@@ -55,8 +57,6 @@ df_crew=pd.concat(crew, ignore_index=True)
 Utilizando la misma función que antes y los mismos pasos, solo que esta vez renombro a la columna a agregar de id como "id_pelicula", ya que dentro de cada dato anidado parece haber propios id's pero no puedo editar los nombres de estos hasta que haya desanidado y hecho los nuevos dataframes. Ademas como en este caso hay vacios hago que verifique si el array es vacio entonces que devuelva un dataframe vacio.<br>
 También hay funciones en las que agregue más columnas de los datos originales, para que más adelante a la hora de hacer las funciones para la API se utilicen los datos dentro de un mismo df, en lugar de andar comparando y llamando datos de dos df distintos.<br>
 
-**En el archivo .py hice una limpieza de datos innecesarios que trabajé en el .ipynb, asi corre más rápido y no ocupa espacio con df no utilizados, por eso en el archivo .ipynb van a ver que hay más df mientras que en el .py solo están los usados para todo el código.**
-
 ### Funciones API
 - Para hacerlas utilice los dataframe que dividí desanidando (en mi caso en lugar de unirlos deje cada uno aparte).
 - En cada una de las funciones de desanidado anteriores, agregue las columnas que necesitaba para estas funciones pedidas(ej agregue "revenue" al df que informa las colecciones por id de peliculas), y en la única que no podía (df_director) comparé el id_pelicula de este y de "data" dentro de la función, creando un dataframe dentro de esta que cumpliera el estar entre la lista generada de id's, también **realice un drop_duplicates()** de este dataframe creado asi no repetian filas generando returns, budget, etc, repetidos.
@@ -69,7 +69,7 @@ También hay funciones en las que agregue más columnas de los datos originales,
 
 Lo primero que se me ocurrio fue juntar todos los df en uno solo, utilizando merge teniendo en cuenta la columna "id_pelicula" (que ya todos los df tienen con el mismo nombre). Pero para hacerlo habia que verificar que ciertos nombres de columnas no se pisen y que fueran todas necesarias.<br>
 * Varios df tenian una columna de nombre "id" asi que lo primero que hice fue renombrar este a "nombredf_id" siendo "nombredf" no solamente parte de su nombre, sino que también la caracteristica más importante del df. Luego de este cambio se elimina la columna "id", ya innecesaria.
-* Para el caso de "df_cast" nos encontramos con "id" y "cast_id", como si no hubiera que hacer ningun cambio y solo tirar la columna id, pero analizando justamente el id representante que yo necesitaba se encontraba en la columna "id", y el que se encuentra en la columna "cast_id" en realidad es un id propio de cada pelicula, por lo que termina reiniciando y no perteneciendo a una persona en especifico, caso contrario con id que si pertenecia a solo una persona. Se cambio el "cast_id" y se eliminó la columna "id". **Al final no se termino agregando este dataframe por analisis posteriores**
+* Para el caso de "df_cast" nos encontramos con "id" y "cast_id", como si no hubiera que hacer ningun cambio y solo tirar la columna id, pero analizando justamente el id representante que yo necesitaba se encontraba en la columna "id", y el que se encuentra en la columna "cast_id" en realidad es un id propio de cada pelicula, por lo que termina reiniciando y no perteneciendo a una persona en especifico, caso contrario con id que si pertenecia a solo una persona. Se cambio el "cast_id" y se eliminó la columna "id".
 * Conforme se fue avanzando y analizando en el merge fui quitando dataframes que contenian los datos innecesarios, que generaban más vacios y no tenian correlaciones ni utilidad para futuras predicciones.
 <p align="center">
 <img src=png\Primer_correlación.png height="600">

@@ -1,3 +1,8 @@
+# **Machine Learning Operations (MLOps)**
+<p align="center">
+<img src=png\MLOPS.png >
+</p><br>
+
 # Proyecto Individual 1
 ## Abril Lasso de la Vega
 **Este readme esta escrito desde el punto de vista de los archivos de jupyter notebook, su paso a paso y orden.**<br>

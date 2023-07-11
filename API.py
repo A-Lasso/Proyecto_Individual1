@@ -197,6 +197,11 @@ def recomendacion(titulo:str):
     segundo_filtro=df_todo[df_todo['director_id'].isin(director)]
     segundo_filtro=segundo_filtro.sort_values(by='vote_average',ascending=False,ignore_index=True).copy()
     
+    # Dejo al dataframe de los directores solamente como un dataframe que 
+    # contenga sus id y nombres.
+    df_director2.drop(columns='id_pelicula',inplace=True)
+    df_director2.drop_duplicates(inplace=True)
+
     # Mejores 5 peliculas desde el punto de vista de 
     primeros=primer_filtro.head(5)
 

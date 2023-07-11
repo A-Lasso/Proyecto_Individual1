@@ -90,7 +90,7 @@ Decidi acortar Las filas del dataframe "df_todo" al poner un minimo a cumplir en
 * Antes se analizo cada una con un histograma para ver la densidad de los valores en cada columna, desde ahi decidir mas o menos dónde debería estar el filtro. <br>
 * Analicé cuántas peliculas me sacadaba y si realmente era lo correcto poner x valor de filtro, si era mucho fui viendo cuántas peliculas me quedaban si iba aplicando otro filtro menor, y con esto analicé qué valores serian los mejores y decidí el que me convencia. 
 * Resulto que por la columna "popularity" no me conviene filtrar, aun asi decidi hacerlo si tenian una popularidad menor a 1 ya que no quitaba tantas peliculas, y si está la popularidad para algo es. (Se entiende que si una pelicula no es popular por más buena que sea para la gente que la vió es muy probable que tenga un aspecto negativo, la razón por la que no se consume tanto)
-* Analicé los nulos y resulto que no se perdían muchas peliculas ni quedaba información a medias, como mucho se pierde algún director de alguna pelicula que tenga más de uno.
+* Analicé los nulos y resulto que no se perdían muchas peliculas ni quedaba información a medias, como mucho se pierde algún director de alguna pelicula que tenga más de uno(los quite para tener información completa).
 
 `Antes de los cambios`<br>
 <p align="center">

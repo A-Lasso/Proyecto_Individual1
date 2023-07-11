@@ -176,7 +176,6 @@ def recomendacion(titulo:str):
     primer_filtro=primer_filtro.sort_values(by='vote_average',ascending=False).copy()
     primer_filtro.drop_duplicates(subset=['id_pelicula','release_year'],inplace=True,ignore_index=True)
     
-    
     # Segundo filtro para devolver la mejor pelicula de alguno de los directores
 
     director=df_director2[df_director2['id_pelicula'].isin(id_pel)]

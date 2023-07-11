@@ -226,3 +226,4 @@ def recomendacion(titulo:str):
     
 
     return {'Nombre': Nombre,'Anio estreno':Anio,'Director':Director}
+#

@@ -212,3 +212,4 @@ data.drop(columns=["belongs_to_collection","genres","spoken_languages","producti
 #df_production_companies.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\companies.csv",index=False)
 #df_crew.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\director.csv",index=False)
 #df_cast.to_csv(r"D:\Programacion\DataScience_Henry\Proyecto_Individual1\csv\cast.csv",index=False)
+#

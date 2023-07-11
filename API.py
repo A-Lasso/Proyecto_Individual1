@@ -168,6 +168,9 @@ def recomendacion(titulo:str):
     df=df_todo[df_todo['id_pelicula'].isin(id_pel)].drop(columns='id_pelicula').copy()
     df.drop_duplicates(inplace=True)
 
+    if df['genre_id'].count()==0:
+        return "La pelicula {} no se encuentra en la base de datos para recomendar a partir de ella".format(titulo)
+    
     # Hago un primer filtro para quedarme con las filas que tengan alguno
     # de los generos de la pelicula ingresada.
     genre=list(df['genre_id'].unique())
@@ -181,27 +184,36 @@ def recomendacion(titulo:str):
     # Esto significa que como minimo deben tener un genero menos que el de la pelicula.
     
     x=len(genre)-1
-    filtro_1 = primer_filtro.groupby('id_pelicula')['id_pelicula'].transform('count') > x
+    filtro_1 = primer_filtro.groupby('id_pelicula')['id_pelicula'].transform('count') >= x
     primer_filtro = primer_filtro[filtro_1].copy()
 
     primer_filtro=primer_filtro.sort_values(by='vote_average',ascending=False).copy()
-    primer_filtro.drop_duplicates(subset=['id_pelicula','release_year'],inplace=True)
-
+    primer_filtro.drop_duplicates(subset=['id_pelicula','release_year'],inplace=True,ignore_index=True)
+    
+    
+    
     # Segundo filtro para devolver la mejor pelicula de alguno de los directores
     # (si hay alguna pelicula del mismo genero).
     director=list(df['director_id'].unique())
-    segundo_filtro=primer_filtro[primer_filtro['director_id'].isin(director)]
-    segundo_filtro=segundo_filtro.sort_values(by='vote_average',ascending=False).copy()
+    segundo_filtro=data[data['director_id'].isin(director)]
+    segundo_filtro=segundo_filtro.sort_values(by='vote_average',ascending=False,ignore_index=True).copy()
     primeros=primer_filtro.head(5)
 
     if segundo_filtro['id_pelicula'].count()!=0:
         primeros.append(segundo_filtro.head(1),ignore_index=True)
-        primeros=primeros.sort_values(by='vote_average',ascending=False).copy().head(5)
         primeros=pd.merge(primeros,df_director2,on='director_id',how='left')
         primeros.drop_duplicates(inplace=True)
+
+        if primeros['title'].count()==6:
+            primeros.drop(index=4,inplace=True)
+            primeros=primeros.sort_values(by='vote_average',ascending=False,ignore_index=True).copy().head(5)
+        else:
+            primeros=primeros.sort_values(by='vote_average',ascending=False,ignore_index=True).copy().head(5)
+
         Nombre=list(primeros['title'])
         Anio=list(primeros['release_year'])
         Director=list(primeros['director_name'])
+
 
     else:
         primeros=pd.merge(primeros,df_director2,on='director_id',how='left')
@@ -209,7 +221,6 @@ def recomendacion(titulo:str):
         Anio=list(primeros['release_year'])
         Director=list(primeros['director_name'])
 
-    if primeros['id_pelicula'].count()==0:
-        return "La pelicula {} no se encuentra en la base de datos para recomendar a partir de ella".format(titulo)
+    
 
     return {'Nombre': Nombre,'Anio estreno':Anio,'Director':Director}

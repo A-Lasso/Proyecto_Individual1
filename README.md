@@ -133,3 +133,81 @@ Decidi acortar Las filas del dataframe "df_todo" al poner un minimo a cumplir en
 <p align="center">
 <img src=png\hist_genre2.png >
 </p><br>
+
+## Función de recomendación
+La idea era una función de aprendizaje que diera la mejor recomendación posible.<br>
+No me fue posible, intente con varios modelos y de varias formas, termine con muchos errores o con la misma pelicula de devolución (no es la idea). Intente arreglar cada error, estuve con eso dias enteros, asi que llegue a realizar una función de filtro que recomiende en base a que tenga los mismos generos y además la 5ta recomendación (si se cumplen los requisitos) es la mejor pelicula del mismo director a la ingresada<br>
+Esta función puede devolver otro resultado si es que la pelicula *no se encuentra en la base de datos*, para lo cual avisa justamente que no se tiene la pelicula y por lo tanto *no se puede usar su información para recomendar*.
+
+```python
+def recomendacion(titulo:str):
+    '''Ingresas un nombre de pelicula y te devuelve una recomendación de 5 peliculas en un diccionario
+       Esta recomendación esta ordenada de la mejor a la peor.
+    '''
+    df_director2=df_director.copy()
+    df_director2.drop_duplicates(subset='id',inplace=True)
+    df_director2['director_id']=df_director['id']
+    df_director2['director_name']=df_director2['name']
+    df_director2.drop(columns=['id','id_pelicula','name','department','job','gender'],inplace=True)
+
+    id_pel=list(data['id_pelicula'][data['title']==titulo])
+    df=df_todo[df_todo['id_pelicula'].isin(id_pel)].drop(columns='id_pelicula').copy()
+    df.drop_duplicates(inplace=True)
+
+    if df['genre_id'].count()==0:
+        return "La pelicula {} no se encuentra en la base de datos para recomendar a partir de ella".format(titulo)
+    
+    # Hago un primer filtro para quedarme con las filas que tengan alguno
+    # de los generos de la pelicula ingresada.
+    genre=list(df['genre_id'].unique())
+
+    # En este primer filtro me fijo que las peliculas pertenezcan a los mismos generos
+    primer_filtro=df_todo[df_todo['genre_id'].isin(genre)]
+    primer_filtro=primer_filtro[~primer_filtro['id_pelicula'].isin(id_pel)]
+
+    # Me deshago de las peliculas que tengan menos coincidencia de generos 
+    # De forma tal que si no se repiten cantidad de generos menos 1 nos deshacemos de ellas
+    # Esto significa que como minimo deben tener un genero menos que el de la pelicula.
+    
+    x=len(genre)-1
+    filtro_1 = primer_filtro.groupby('id_pelicula')['id_pelicula'].transform('count') >= x
+    primer_filtro = primer_filtro[filtro_1].copy()
+
+    primer_filtro=primer_filtro.sort_values(by='vote_average',ascending=False).copy()
+    primer_filtro.drop_duplicates(subset=['id_pelicula','release_year'],inplace=True,ignore_index=True)
+    
+    # Segundo filtro para devolver la mejor pelicula de alguno de los directores
+    # (si hay alguna pelicula del mismo genero).
+    director=list(df['director_id'].unique())
+    segundo_filtro=data[data['director_id'].isin(director)]
+    segundo_filtro=segundo_filtro.sort_values(by='vote_average',ascending=False,ignore_index=True).copy()
+    primeros=primer_filtro.head(5)
+
+    if segundo_filtro['id_pelicula'].count()!=0:
+        primeros.append(segundo_filtro.head(1),ignore_index=True)
+        primeros=pd.merge(primeros,df_director2,on='director_id',how='left')
+        primeros.drop_duplicates(inplace=True)
+
+        if primeros['title'].count()==6:
+            primeros.drop(index=4,inplace=True)
+            primeros=primeros.sort_values(by='vote_average',ascending=False,ignore_index=True).copy().head(5)
+        else:
+            primeros=primeros.sort_values(by='vote_average',ascending=False,ignore_index=True).copy().head(5)
+
+        Nombre=list(primeros['title'])
+        Anio=list(primeros['release_year'])
+        Director=list(primeros['director_name'])
+
+
+    else:
+        primeros=pd.merge(primeros,df_director2,on='director_id',how='left')
+        Nombre=list(primeros['title'])
+        Anio=list(primeros['release_year'])
+        Director=list(primeros['director_name'])
+
+    
+
+    return {'Nombre': Nombre,'Anio estreno':Anio,'Director':Director}
+```
+
+Se ve complicada pero no lo es. Se basa en quedarse con las mejores peliculas que cumplan el tener los mismos generos (como mucho les puede faltar uno de los generos de la pelicula ingresada), luego ordenar por la columna de "vote_average" y nos quedamos con las 5 primeras peliculas recomendadas 

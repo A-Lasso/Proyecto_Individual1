@@ -206,7 +206,7 @@ def recomendacion(titulo:str):
     primeros=primer_filtro.head(5)
 
     if segundo_filtro['id_pelicula'].count()!=0:
-        primeros.append(segundo_filtro.head(1),ignore_index=True)
+        primeros=primeros.append(segundo_filtro.head(1),ignore_index=True)
         primeros=pd.merge(primeros,df_director2,on='director_id',how='left')
         primeros.drop_duplicates(inplace=True)
 

@@ -33,8 +33,10 @@ Empecé por hacer las transformaciones pedidas y necesarias, comenzando con las 
     * Eliminé tres filas que eran completamente inusables, no solamente están llenas de vacios, sino que los pocos valores que tienen parecen estar intercambiados, y no sabría cómo sería el reordenamiento correcto. Justamente este desorden trajo mayores vacios, las fechas fueron imposibles de calcular.<br>
     `data.drop(labels=[19730,29503,35587],axis=0,inplace=True)`.<br>
 
-**Terminé re acomodando las columnas del dataframe por simple gusto, el orden es a ojo y no cambia los valores ni los futuros resultados.**<br>
+* **Terminé re acomodando las columnas del dataframe por simple gusto, el orden es a ojo y no cambia los valores ni los futuros resultados.**<br>
 * **El nombre "id_pelicula" aclara mejor el tipo de id, asi que reemplacé todos los id que hagan referencia a la pelicula por este mismo nombre(va a verse los cambios en el código).**<br>
+
+* Realice un drop_duplicates() aún si no fue parte de lo pedido.
 
 #### Desanidado
 *Decidí un apartado para esto dentro de ETL ya que requiere mayor desarrollo que simplemente hacer una columna*<br>

@@ -212,9 +212,6 @@ def recomendacion(titulo:str):
 
         if primeros['title'].count()==6:
             primeros.drop(index=4,inplace=True)
-            primeros=primeros.sort_values(by='vote_average',ascending=False,ignore_index=True).copy().head(5)
-        else:
-            primeros=primeros.sort_values(by='vote_average',ascending=False,ignore_index=True).copy().head(5)
 
         Nombre=list(primeros['title'])
         Anio=list(primeros['release_year'])

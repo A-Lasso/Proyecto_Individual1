@@ -54,7 +54,7 @@ def peliculas_duracion(Pelicula):
     En caso de escribir un nombre que no se encuentre en la base de datos, devuelve: "No hay pelicula con ese titulo".
     '''
     Pelicula=Pelicula.strip()
-    cant=int(data["runtime"][data["title"]==Pelicula].count())
+    cant=int(data["id_pelicula"][data["title"]==Pelicula].count())
     df=data
     # Cambio los datos del año a int asi se ve mejor
     df["release_year"]=pd.to_numeric(df["release_year"],downcast="integer")
@@ -68,7 +68,7 @@ def peliculas_duracion(Pelicula):
     else:
         return "No hay pelicula con ese titulo"
        
-    return {'Pelicula ':Pelicula,'Duracion':list(dur),'Anio':list(Anio)}
+    return {'Pelicula ':Pelicula,'Duracion':dur,'Anio':Anio}
 
 @app.get("/franquicia/{Franquicia}")
 def franquicia(Franquicia:str):

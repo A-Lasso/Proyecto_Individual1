@@ -162,18 +162,18 @@ def recomendacion(titulo:str):
     df_director2.drop_duplicates(subset='id',inplace=True)
     df_director2['director_id']=df_director['id']
     df_director2['director_name']=df_director2['name']
-    df_director2.drop(columns=['id','id_pelicula','name','department','job','gender'],inplace=True)
+    df_director2.drop(columns=['id','name','department','job','gender'],inplace=True)
 
     id_pel=list(data['id_pelicula'][data['title']==titulo])
-    df=df_todo[df_todo['id_pelicula'].isin(id_pel)].drop(columns='id_pelicula').copy()
+    df=df_genres[df_genres['id_pelicula'].isin(id_pel)].drop(columns='id_pelicula').copy()
     df.drop_duplicates(inplace=True)
 
-    if df['genre_id'].count()==0:
-        return "La pelicula {} no se encuentra en la base de datos para recomendar a partir de ella".format(titulo)
-    
     # Hago un primer filtro para quedarme con las filas que tengan alguno
     # de los generos de la pelicula ingresada.
-    genre=list(df['genre_id'].unique())
+    genre=list(df['id'].unique())
+
+    if len(genre)==0:
+        return "La pelicula {} no se encuentra en la base de datos para recomendar a partir de ella".format(titulo)
 
     # En este primer filtro me fijo que las peliculas pertenezcan a los mismos generos
     primer_filtro=df_todo[df_todo['genre_id'].isin(genre)]
@@ -191,12 +191,14 @@ def recomendacion(titulo:str):
     primer_filtro.drop_duplicates(subset=['id_pelicula','release_year'],inplace=True,ignore_index=True)
     
     
-    
     # Segundo filtro para devolver la mejor pelicula de alguno de los directores
-    # (si hay alguna pelicula del mismo genero).
-    director=list(df['director_id'].unique())
-    segundo_filtro=data[data['director_id'].isin(director)]
+
+    director=df_director2[df_director2['id_pelicula'].isin(id_pel)]
+    director=list(director['director_id'].unique())
+    segundo_filtro=df_todo[df_todo['director_id'].isin(director)]
     segundo_filtro=segundo_filtro.sort_values(by='vote_average',ascending=False,ignore_index=True).copy()
+    
+    # Mejores 5 peliculas desde el punto de vista de 
     primeros=primer_filtro.head(5)
 
     if segundo_filtro['id_pelicula'].count()!=0:

@@ -89,7 +89,7 @@ Siguiendo:<br>
 Decidi acortar Las filas del dataframe "df_todo" al poner un minimo a cumplir en las columnas 'vote_average','vote_count' y 'popularity'. 
 * Antes se analizo cada una con un histograma para ver la densidad de los valores en cada columna, desde ahi decidir mas o menos dónde debería estar el filtro. <br>
 * Analicé cuántas peliculas me sacadaba y si realmente era lo correcto poner x valor de filtro, si era mucho fui viendo cuántas peliculas me quedaban si iba aplicando otro filtro menor, y con esto analicé qué valores serian los mejores y decidí el que me convencia. 
-* Resulto que por la columna "popularity" no me conviene filtrar, aun asi decidi hacerlo si tenian una popularidad menor a 1 ya que no quitaba tantas peliculas, y si está la popularidad para algo es. (Se entiende que si una pelicula no es popular por más buena que sea para la gente que la vió es muy probable que tenga un aspecto negativo, la razón por la que no se consume tanto)
+* Resulto que por la columna "popularity" no me conviene filtrar, aun asi decidí hacerlo si tenian una popularidad menor a 1 ya que no quitaba tantas peliculas, y si está la popularidad para algo es. (Se entiende que si una pelicula no es popular por más buena que sea para la gente que la vió es muy probable que tenga un aspecto negativo, la razón por la que no se consume tanto)
 * Analicé los nulos y resulto que no se perdían muchas peliculas ni quedaba información a medias, como mucho se pierde algún director de alguna pelicula que tenga más de uno(los quite para tener información completa).
 
 `Antes de los cambios`<br>
@@ -148,18 +148,18 @@ def recomendacion(titulo:str):
     df_director2.drop_duplicates(subset='id',inplace=True)
     df_director2['director_id']=df_director['id']
     df_director2['director_name']=df_director2['name']
-    df_director2.drop(columns=['id','id_pelicula','name','department','job','gender'],inplace=True)
+    df_director2.drop(columns=['id','name','department','job','gender'],inplace=True)
 
     id_pel=list(data['id_pelicula'][data['title']==titulo])
-    df=df_todo[df_todo['id_pelicula'].isin(id_pel)].drop(columns='id_pelicula').copy()
+    df=df_genres[df_genres['id_pelicula'].isin(id_pel)].drop(columns='id_pelicula').copy()
     df.drop_duplicates(inplace=True)
 
-    if df['genre_id'].count()==0:
-        return "La pelicula {} no se encuentra en la base de datos para recomendar a partir de ella".format(titulo)
-    
     # Hago un primer filtro para quedarme con las filas que tengan alguno
     # de los generos de la pelicula ingresada.
-    genre=list(df['genre_id'].unique())
+    genre=list(df['id'].unique())
+
+    if len(genre)==0:
+        return "La pelicula {} no se encuentra en la base de datos para recomendar a partir de ella".format(titulo)
 
     # En este primer filtro me fijo que las peliculas pertenezcan a los mismos generos
     primer_filtro=df_todo[df_todo['genre_id'].isin(genre)]
@@ -176,11 +176,15 @@ def recomendacion(titulo:str):
     primer_filtro=primer_filtro.sort_values(by='vote_average',ascending=False).copy()
     primer_filtro.drop_duplicates(subset=['id_pelicula','release_year'],inplace=True,ignore_index=True)
     
+    
     # Segundo filtro para devolver la mejor pelicula de alguno de los directores
-    # (si hay alguna pelicula del mismo genero).
-    director=list(df['director_id'].unique())
-    segundo_filtro=data[data['director_id'].isin(director)]
+
+    director=df_director2[df_director2['id_pelicula'].isin(id_pel)]
+    director=list(director['director_id'].unique())
+    segundo_filtro=df_todo[df_todo['director_id'].isin(director)]
     segundo_filtro=segundo_filtro.sort_values(by='vote_average',ascending=False,ignore_index=True).copy()
+    
+    # Mejores 5 peliculas desde el punto de vista de 
     primeros=primer_filtro.head(5)
 
     if segundo_filtro['id_pelicula'].count()!=0:
@@ -210,4 +214,7 @@ def recomendacion(titulo:str):
     return {'Nombre': Nombre,'Anio estreno':Anio,'Director':Director}
 ```
 
-Se ve complicada pero no lo es. Se basa en quedarse con las mejores peliculas que cumplan el tener los mismos generos (como mucho les puede faltar uno de los generos de la pelicula ingresada), luego ordenar por la columna de "vote_average" y nos quedamos con las 5 primeras peliculas recomendadas 
+Se ve complicada pero no lo es. Se basa en quedarse con las mejores peliculas que cumplan el tener los mismos generos (como mucho les puede faltar uno de los generos de la pelicula ingresada).De antemano nos aseguramos de eliminar todas las peliculas duplicadas que tengan mismo id y año de estreno, son pocos los casos(17 si no estoy mal) y sus diferencias entre los valores de las columnas es muy poca, que nos quedemos con una o la otra no nos cambia, además esto elimina las filas repetidas por distintos generos id (ya no necesarios), optimizando la velocidad y ocupando menos espacio.<br>
+Luego ordena por la columna de "vote_average" y nos quedamos con las 5 primeras peliculas recomendadas. A lo que, utilizando "segundo_filtro", le agregamos una pelicula que sea del mismo director, sin ser necesariamente de los mismos generos, y la dejamos como la 5ta pelicula a recomendar, siendo la mejor pelicula del director (basado en vote_average). Si es que el director no tiene otras peliculas además de la ingresada, y por lo tanto este dataframe quedaría vacio, se regresan solamente las 5 primeras peliculas basadas en los generos.
+* El problema principal de esta función es que al basarse completamente en generos, las peliculas que no cuentan con esta información (por suerte bastante pocas) no van a poder usarse para recomendar.
+* Siempre entre cada cambio de los dataframes que vamos creando (copiar,filtrar,eliminar columnas) hacemos un drop_duplicates() para asegurar que si alguno de esos cambios genero filas repetidas -ej: la diferencia entre las filas estaba en la columna eliminada- que deje una.

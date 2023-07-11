@@ -116,7 +116,7 @@ def productoras_exitosas(Productora:str):
     suma=df['revenue'].sum()
     cant= df['name'].count()
 
-    return {"Productora": Productora , "Revenue ": suma ,  "Cantidad": cant}
+    return {"Productora": Productora , "Revenue ": str(suma) ,  "Cantidad": str(cant)}
 
 @app.get("/director/{nombre_director}")
 def get_director(nombre_director:str):

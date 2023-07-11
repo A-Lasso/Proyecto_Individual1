@@ -54,21 +54,21 @@ def peliculas_duracion(Pelicula):
     En caso de escribir un nombre que no se encuentre en la base de datos, devuelve: "No hay pelicula con ese titulo".
     '''
     Pelicula=Pelicula.strip()
-    cant=int(data["id_pelicula"][data["title"]==Pelicula].count())
+    cant=int(data["title"][data["title"]==Pelicula].count())
     df=data.copy()
     # Cambio los datos del año a int asi se ve mejor
-
+    df["release_year"]=pd.to_numeric(df["release_year"],downcast="integer")
     if cant>1:
-        dur=list(df["runtime"][df["title"]==Pelicula].values)
-        Anio=list(df["release_year"][df["title"]==Pelicula].values)
+        dur=str(list(df["runtime"][df["title"]==Pelicula].values))
+        Anio=str(list(df["release_year"][df["title"]==Pelicula].values))
 
     elif cant==1:
-        dur=df["runtime"][df["title"]==Pelicula].values[0]
-        Anio=int(df["release_year"][df["title"]==Pelicula].values[0])
+        dur=str(df["runtime"][df["title"]==Pelicula].values[0])
+        Anio=str(int(df["release_year"][df["title"]==Pelicula].values[0])) 
     else:
         return "No hay pelicula con ese titulo"
        
-    return {'Pelicula ':Pelicula,'Duracion':str(dur),'Anio':str(Anio)}
+    return {'Pelicula ':Pelicula,'Duracion':dur,'Anio':Anio}
 
 @app.get("/franquicia/{Franquicia}")
 def franquicia(Franquicia:str):

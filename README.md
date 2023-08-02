@@ -188,6 +188,7 @@ def recomendacion(titulo:str):
     director=df_director2[df_director2['id_pelicula'].isin(id_pel)]
     director=list(director['director_id'].unique())
     segundo_filtro=df_todo[df_todo['director_id'].isin(director)]
+    segundo_filtro=segundo_filtro[~segundo_filtro['id_pelicula'].isin(id_pel)]
     segundo_filtro=segundo_filtro.sort_values(by='vote_average',ascending=False,ignore_index=True).copy()
     
     # Dejo al dataframe de los directores solamente como un dataframe que 
@@ -199,7 +200,7 @@ def recomendacion(titulo:str):
     primeros=primer_filtro.head(5)
 
     if segundo_filtro['id_pelicula'].count()!=0:
-        
+
         primeros=primeros.append(segundo_filtro.head(1),ignore_index=True)
         primeros=pd.merge(primeros,df_director2,on='director_id',how='left')
         primeros.drop_duplicates(inplace=True)
@@ -210,7 +211,6 @@ def recomendacion(titulo:str):
         Nombre=list(primeros['title'])
         Anio=list(primeros['release_year'])
         Director=list(primeros['director_name'])
-
 
     else:
         primeros=pd.merge(primeros,df_director2,on='director_id',how='left')

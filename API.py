@@ -40,9 +40,12 @@ def peliculas_idioma(idioma):
     'lb', 'si']
     '''
     idioma=idioma.strip()
-    count1= str(data["original_language"][data["original_language"]==idioma].count())
+    count1= int(data["original_language"][data["original_language"]==idioma].count())
 
-    return {"idioma":idioma,"cantidad":count1}
+    if count1==0:
+        return "No se encuentra el idioma o no hay peliculas en este."
+    
+    return {"idioma":idioma,"cantidad":str(count1)}
 
 @app.get("/peliculas/duracion/{Pelicula}")
 def peliculas_duracion(Pelicula):

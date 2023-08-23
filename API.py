@@ -2,7 +2,6 @@
 import pandas as pd
 import numpy as np
 from fastapi import FastAPI
-from sklearn.metrics.pairwise import euclidean_distances
 
 
 # Usamos: data,df_belongs_to_collection,df_production_countries,df_production_companies,df_crew

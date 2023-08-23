@@ -25,7 +25,7 @@ Se realizan las funciones pedidas y los cambios pedidos por el proyecto (Algunos
 <br>
 Se utiliza el archivo con las funciones y FastApi para subir todo a Render y correrlo como una pagina con la capacidad de compartirse y que otras personas la utilicen.(el archivo subido a render fue "API.py" y además el "requirements.txt" para que descargara las librerias necesarias).
 <br>
-
+<br>
 Si bien la idea principal parecia rondear en los modelos ML yo y ellos no nos llevamos bien, ya que intente ferozmente y no logre generarlo como queria, por eso es que realice la función de recomendación basada en filtros que esta más abajo de todo, da resultados, es útil, cumple para recomendar, y se llego al MVP que se pide del proyecto.
 
 <br>

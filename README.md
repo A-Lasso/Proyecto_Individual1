@@ -25,6 +25,7 @@ Si bien la idea principal parecia rondear en los modelos ML yo y ellos no nos ll
 
 <br>
 <br>
+
 ## Analisis profundo
 **La explicación esta escrita desde el punto de vista de los archivos de jupyter notebook, su paso a paso y orden.**<br>
 **En el código de los archivos .py hay comentarios más simples y cambios de orden, la explicación es la misma**

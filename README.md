@@ -4,9 +4,24 @@
 </p><br>
 
 # Proyecto Individual 1
+## Rol a desarrollar
+Empezaste recientemente como Data Scientist en una start-up que provee servicios de agregación de plataformas de streaming. El mundo es bello y vas a crear tu primer modelo de ML que soluciona un problema de negocio: un sistema de recomendación que aún no ha sido puesto en marcha!<br>
+
+Vamos a sus datos y nos damos cuenta que la madurez de los mismos es poca (ok, es nula 😭): Datos anidados, sin transformar, no hay procesos automatizados para la actualización de nuevas películas o series, entre otras cosas…. haciendo el trabajo imposible.<br>
+
+Debes empezar desde 0, haciendo un trabajo rápido de Data Engineer y tener un MVP (Minimum Viable Product) para el cierre del proyecto! Tu cabeza va a explotar 🤯, pero al menos sabes cual es, conceptualmente, el camino que debes de seguir ❗. Así que te espantas los miedos y te pones manos a la obra 💪.<br>
+
+(Casi textualmente copiado de la propuesta de proyecto original para que entiendan la esencia de este)
+
 ## TECNOLOGÍAS
+
 - Python. (pandas, numpy, seaborn, matplotlib, uvicorn y FastApi)
 - Render
+
+## Resumen
+Se realizan las funciones pedidas y los cambios pedidos por el proyecto (Algunos extra que se mencionan en la explicación extensa). Luego con FastApi se va comprobando que estas funciones y sus cambios se apliquen, viendo que FastApi corre y las funciones realizan su trabajo (no al principio pero se fueron afilando antes de la fecha de entrega).<br>
+Se utiliza el archivo con las funciones y FastApi para subir todo a Render y correrlo como una pagina con la capacidad de compartirse y que otras personas la utilicen.(el archivo subido a render fue "API.py" y además el "requirements.txt" para que descargara las librerias necesarias).<br>
+Si bien la idea principal parecia rondear en los modelos ML yo y ellos no nos llevamos bien, ya que intente ferozmente y no logre generarlo como queria, por eso es que realice la función de recomendación basada en filtros que esta más abajo de todo, da resultados, es útil, cumple para recomendar, y se llego al MVP que se pide del proyecto.
 
 ## README
 **Este readme esta escrito desde el punto de vista de los archivos de jupyter notebook, su paso a paso y orden.**<br>
@@ -23,6 +38,7 @@
 - Todo el EDA se encuentra en el archivo EDA.ipynb, también se encuentra allí el avance respecto a la función de recomendación. Por el EDA se genero un dataframe distinto para la recomendación, por lo tanto se encuentra otro ETL dentro del archivo EDA.ipynb (utilizando ya los csv tratados anteriormente).
 
 ## Explicación profunda de cada parte.
+Esta parte es para quienes quieran entender el código en profundidad sino no es necesario leerla. Esta escrito en lo que yo considero un lenguaje coloquial con el objetivo de que sea entendible para la mayoría de personas. Por eso también es tan extenso, creo que hay veces que no explicamos ciertos detalles que consideramos básicos y por eso luego las personas a las que les explicamos no son capaces de seguirnos. Con eso dicho hasta esta parte el resumen del proyecto, lo siguiente es un poco tedioso.
 
 ### ETL
 Empecé por hacer las transformaciones pedidas y necesarias, comenzando con las más fáciles:<br>

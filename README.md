@@ -2,7 +2,7 @@
 <p align="center">
 <img src=png\MLOPS.png >
 </p><br>
-Repositorio origen con puntos, fuentes y requisitos de aprobación:<br>
+Repositorio origen con funciones, criterios de evaluación, fuente de datos y requisitos de aprobación:<br>
 https://github.com/soyHenry/PI_ML_OPS
 
 # Proyecto Individual 1

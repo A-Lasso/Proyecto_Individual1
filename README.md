@@ -2,6 +2,8 @@
 <p align="center">
 <img src=png\MLOPS.png >
 </p><br>
+Repositorio origen con puntos, fuentes y requisitos de aprobación:<br>
+https://github.com/soyHenry/PI_ML_OPS
 
 # Proyecto Individual 1
 ## Rol a desarrollar

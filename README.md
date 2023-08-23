@@ -22,7 +22,7 @@ Debes empezar desde 0, haciendo un trabajo rápido de Data Engineer y tener un M
 
 ## Resumen
 <br>
-Se realizan las funciones pedidas y los cambios pedidos por el proyecto (Algunos extra que se mencionan en la explicación extensa). Luego con FastApi se va comprobando que estas funciones y sus cambios se apliquen, viendo que FastApi corre y las funciones realizan su trabajo (no al principio pero se fueron afilando antes de la fecha de entrega).
+Se realizan las funciones y los cambios pedidos por el proyecto (Algunos extra que se mencionan en la explicación extensa). Luego con FastApi se va comprobando que estas funciones y sus cambios se apliquen, viendo que FastApi corre y las funciones realizan su trabajo (no al principio pero se fueron afilando antes de la fecha de entrega).
 <br>
 <br>
 Se utiliza el archivo con las funciones y FastApi para subir todo a Render y correrlo como una pagina con la capacidad de compartirse y que otras personas la utilicen.(el archivo subido a render fue "API.py" y además el "requirements.txt" para que descargara las librerias necesarias).

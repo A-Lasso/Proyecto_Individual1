@@ -4,7 +4,11 @@
 </p><br>
 
 # Proyecto Individual 1
-## Abril Lasso de la Vega
+## TECNOLOGÍAS
+- Python. (pandas, numpy, seaborn, matplotlib, uvicorn y FastApi)
+- Render
+
+## README
 **Este readme esta escrito desde el punto de vista de los archivos de jupyter notebook, su paso a paso y orden.**<br>
 **En el código de los archivos .py hay comentarios más simples y cambios de orden, la explicación es la misma**
 
@@ -14,9 +18,11 @@
 
 - Recuerde que para que el código ETL le funcione correctamente, debe cambiar la ruta del archivo en el pd.read_csv, a la ruta en la que se encuentre este en su pc (Luego para el resto de archivos son usados los csv limpios, que se encuentran en la carpeta "csv", por lo tanto no necesita cambiar nada).<br>
 
-- En el archivo ETL.ipynb además de encontrarse cómo fui avanzando y cada cosa que hice respecto al ETL, también se encuentran las funciones de la API (es lo mismo a verlas en API.py, pero hay algunos codigo ejemplo y prueba).<br>
+- En el archivo ETL.ipynb además de encontrarse cómo fui avanzando y cada cosa que hice respecto al ETL, también se encuentran las funciones de la API(conforme las fui desarrollando en este archivo y editando) -es lo mismo a verlas en API.py, pero hay algunos codigo ejemplo y prueba-.<br>
 
-- Todo el EDA se encuentra en el archivo EDA.ipynb, también se encuentra allí el avance respecto a la función de recomendación. Por el EDA se genero un dataframe distinto para la recomendación, asi que va a ver otro etl dentro del archivo EDA (utilizando ya los csv tratados anteriormente).
+- Todo el EDA se encuentra en el archivo EDA.ipynb, también se encuentra allí el avance respecto a la función de recomendación. Por el EDA se genero un dataframe distinto para la recomendación, por lo tanto se encuentra otro ETL dentro del archivo EDA.ipynb (utilizando ya los csv tratados anteriormente).
+
+## Explicación profunda de cada parte.
 
 ### ETL
 Empecé por hacer las transformaciones pedidas y necesarias, comenzando con las más fáciles:<br>

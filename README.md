@@ -23,8 +23,10 @@ Se realizan las funciones pedidas y los cambios pedidos por el proyecto (Algunos
 Se utiliza el archivo con las funciones y FastApi para subir todo a Render y correrlo como una pagina con la capacidad de compartirse y que otras personas la utilicen.(el archivo subido a render fue "API.py" y además el "requirements.txt" para que descargara las librerias necesarias).<br>
 Si bien la idea principal parecia rondear en los modelos ML yo y ellos no nos llevamos bien, ya que intente ferozmente y no logre generarlo como queria, por eso es que realice la función de recomendación basada en filtros que esta más abajo de todo, da resultados, es útil, cumple para recomendar, y se llego al MVP que se pide del proyecto.
 
-## README
-**Este readme esta escrito desde el punto de vista de los archivos de jupyter notebook, su paso a paso y orden.**<br>
+<br>
+<br>
+## Analisis profundo
+**La explicación esta escrita desde el punto de vista de los archivos de jupyter notebook, su paso a paso y orden.**<br>
 **En el código de los archivos .py hay comentarios más simples y cambios de orden, la explicación es la misma**
 
 - En el archivo ETL.py se encuentran todas las transformaciones que hice y luego guardé los .csv ya limpios, ordenados y de la forma que quería.
